@@ -1,0 +1,44 @@
+.fade-out {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  animation: fadeOutDelay 2s forwards;
+}
+
+@keyframes fadeOutDelay {
+  0% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  99% {
+    display: flex;
+  }
+  100% {
+    display: none;
+    opacity: 0;
+  }
+}
+
+.fade-in-scale {
+  opacity: 0;
+  transform: scale(0.5);
+  animation: fadeInScale 1.5s forwards;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  55.56% {
+    opacity: 1;
+    /* 0.5s of 0.9s = 55.56% */
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
