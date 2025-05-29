@@ -2,15 +2,33 @@ import { useEffect, useRef, useState } from "react";
 import { Theme } from "../../utils/globals";
 import Chef from "./chef.svg";
 
-const ChefSueVisualizer = ({ audioSrc }: { audioSrc?: string }) => {
-  const [volume, setVolume] = useState(0);
+const ChefSueVisualizer = ({
+  audioSrc,
+  mockVolume,
+  disableSue
+}: {
+  audioSrc?: string;
+  mockVolume?: number;
+  disableSue?: boolean;
+}) => {
+  const [volume, setVolume] = useState(mockVolume || 0);
   const animationRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(performance.now());
   const [_, setRenderTick] = useState(0); // force re-renders
 
+  // For smooth transitions on disableSue
+  const [disableSueAnim, setDisableSueAnim] = useState(disableSue);
+
   useEffect(() => {
+    setDisableSueAnim(disableSue);
+  }, [disableSue]);
+
+  useEffect(() => {
+    if (mockVolume) {
+      return;
+    }
     const audio = new Audio(audioSrc);
-    audio.volume = 0;
+    audio.volume = 1;
     audio.autoplay = true;
 
     const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -46,8 +64,11 @@ const ChefSueVisualizer = ({ audioSrc }: { audioSrc?: string }) => {
 
   // Sinusoidal warp + volume
   const warp = Math.sin(time * 2) * 0.5 + 0.5;
-  const scale = 1 + (volume * 3 + warp * 0.2);
+  const scale = 1 + (volume * 2 + warp * 0.2);
 
+  // Smooth transition values for disableSue
+  const transitionDuration = "0.1s";
+  const transitionTiming = "cubic-bezier(0.4,0,0.2,1)";
   return (
     <div
       style={{
@@ -75,9 +96,9 @@ const ChefSueVisualizer = ({ audioSrc }: { audioSrc?: string }) => {
             height: "100px",
             borderRadius: "50%",
             opacity: 0.9,
-            backgroundColor: Theme.orange,
+            backgroundColor: !disableSueAnim ? Theme.orange : Theme.darkGreyAccent,
             transform: `scale(${Math.sin(scale) * 1.5})`,
-            transition: "transform 0.05s ease-out",
+            transition: `background-color ${transitionDuration} ${transitionTiming}, transform 0.05s ease-out`,
             position: "relative",
             zIndex: 5,
           }}
@@ -89,9 +110,9 @@ const ChefSueVisualizer = ({ audioSrc }: { audioSrc?: string }) => {
             height: "105px",
             borderRadius: "50%",
             opacity: 0.9,
-            backgroundColor: Theme.orangeAccent,
+            backgroundColor: !disableSueAnim ? Theme.orangeAccent : Theme.darkGrey,
             transform: `scale(${scale})`,
-            transition: "transform 0.05s ease-out",
+            transition: `background-color ${transitionDuration} ${transitionTiming}, transform 0.05s ease-out`,
             position: "absolute",
             zIndex: 4,
           }}
@@ -100,7 +121,8 @@ const ChefSueVisualizer = ({ audioSrc }: { audioSrc?: string }) => {
           style={{
             width: "5rem",
             height: "5rem",
-            transform: `scale(${1 + volume * 3 - Math.sin(warp) * 0.1})`,
+            transform: `scale(${disableSueAnim ? 0.8 : (1.25 + volume * 2 - Math.sin(warp) * 0.1)})`,
+            opacity: disableSueAnim ? 0.5 : 1,
             borderRadius: "50%",
             background: "#fff",
             display: "flex",
@@ -109,6 +131,11 @@ const ChefSueVisualizer = ({ audioSrc }: { audioSrc?: string }) => {
             overflow: "hidden",
             position: "absolute",
             zIndex: 6,
+            transition: [
+              `opacity ${transitionDuration} ${transitionTiming}`,
+              `transform ${transitionDuration} ${transitionTiming}`,
+              `background ${transitionDuration} ${transitionTiming}`
+            ].join(", "),
           }}
         >
           <img
@@ -116,7 +143,11 @@ const ChefSueVisualizer = ({ audioSrc }: { audioSrc?: string }) => {
             alt="Chef"
             width={60}
             height={60}
-            style={{ borderRadius: "50%" }}
+            style={{
+              borderRadius: "50%",
+              transition: `opacity ${transitionDuration} ${transitionTiming}`,
+              opacity: disableSueAnim ? 0.5 : 1,
+            }}
           />
         </div>
       </div>

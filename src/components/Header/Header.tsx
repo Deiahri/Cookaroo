@@ -1,13 +1,14 @@
-import React from 'react';
+import { type CSSProperties } from 'react';
 import { FaChevronLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   title: string;
   onBack?: () => void;
+  style?: CSSProperties;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
+const Header: React.FC<HeaderProps> = ({ title, onBack, style }) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -24,7 +25,8 @@ const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
         height: '8vh',
         background: '#fff',
         boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
-        position: 'relative'
+        position: 'relative',
+        ...style,
       }}
     >
       <button
@@ -41,7 +43,6 @@ const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
           fontSize: '1.5rem',
         }}
         aria-label="Back"
-        // disabled={!onBack}
       >
         <FaChevronLeft />
       </button>
