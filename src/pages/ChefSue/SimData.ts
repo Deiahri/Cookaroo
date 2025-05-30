@@ -5,7 +5,8 @@ export type MessageSimData = {
   recipe?: string;
   newLine?: boolean;
 };
-/* User: Stephen is a health conscious student who wants to make a dish 
+/* 
+User: Stephen is a health conscious student who wants to make a dish 
 from his favorite restaurant. 
 He has a peanut allergy and is lactose intolerant. 
 He’s struggling to identify dairy-free or lactose friendly ingredients 
@@ -16,6 +17,18 @@ He also doesn’t have a lot of time to research on possible substitutes for his
 
 // user: Hey, I'd like something fast and easy to make.
 // chef sue: Sounds good! Would you like a specific cuisine, or should I base it on what’s available in local stores?
+// user: no, based local stores
+// chef sue: cool. I noticed no mention of allergies.
+// user: I actually have a peanut allergy and am lactose intolerant
+// chef: got it. ADded to profile. Are you cooking one meal, or want leftovers?
+// user: I'll be meal prepping. Also, I'm thinking pasta, the kind I'd have at the red ladle. It was white, I think.
+// chef: You might be thinking of Fettucini Alfredo, does that sound right?
+// user: Excellent. Here's a recipe based on what you can get from what's around you.
+
+// user views recipe, and is almost perfect. Looks at nutrition and asks to make more protein rich.
+// chef: ... We can achieve that by swapping out the pasta for chickpea or soy-based pasta, and adding chicken or shrimp.
+// user: sounds good, let's try that.
+// chef: ... Excellent. Here's recipe.
 
 const msg1 =
   "Sounds good! Would you like a specific cuisine, or should I base it on what’s available in local stores?";
@@ -306,4 +319,146 @@ export const SimData4: MessageSimData[] = [
     text: "later?",
     delay: 500,
   },
+];
+
+export const SimData5: MessageSimData[] = [
+  {
+    text: "Got",
+    delay: 250,
+    audioSrc: "/v5.mp3",
+  },
+  {
+    text: "it.",
+    delay: 450,
+  },
+  {
+    text: "Sounds",
+    delay: 250,
+  },
+  {
+    text: "like",
+    delay: 220,
+  },
+  {
+    text: "that",
+    delay: 250,
+  },
+  {
+    text: "creamy",
+    delay: 300,
+  },
+  {
+    text: "fettuccine",
+    delay: 700,
+  },
+  {
+    text: "from",
+    delay: 150,
+  },
+  {
+    text: "The",
+    delay: 100,
+  },
+  {
+    text: "Red",
+    delay: 150,
+  },
+  {
+    text: "Ladle.",
+    delay: 900,
+  },
+  {
+    text: "I'll",
+    delay: 150,
+    newLine: true,
+    audioSrc: "/v5.mp3",
+  },
+  {
+    text: "pull",
+    delay: 100,
+  },
+  {
+    text: "together",
+    delay: 370,
+  },
+  {
+    text: "a",
+    delay: 20,
+  },
+  {
+    text: "version",
+    delay: 300,
+  },
+  {
+    text: "that",
+    delay: 100,
+  },
+  {
+    text: "matches",
+    delay: 200,
+  },
+  {
+    text: "your",
+    delay: 200,
+  },
+  {
+    text: "profile",
+    delay: 400,
+  },
+  {
+    text: "using",
+    delay: 200,
+  },
+  {
+    text: "what's",
+    delay: 200,
+  },
+  {
+    text: "available",
+    delay: 300,
+  },
+  {
+    text: "near",
+    delay: 200,
+  },
+  {
+    text: "you.",
+    delay: 1000,
+  },
+  {
+    text: "Here's",
+    delay: 300,
+    newLine: true,
+    audioSrc: "/v5.mp3",
+  },
+  {
+    text: "a",
+    delay: 50,
+  },
+  {
+    text: "quick",
+    delay: 200,
+  },
+  {
+    text: "recipe",
+    delay: 350,
+  },
+  {
+    text: "for",
+    delay: 150,
+  },
+  {
+    text: "meal",
+    delay: 200,
+  },
+  {
+    text: "prep.",
+    delay: 700,
+  },
+  {
+    text: "",
+    delay: 300,
+    newLine: true,
+    recipe: '68f45-c6ae9a0-800565-8d3a84c-7c0b371'
+  }
 ];

@@ -6,37 +6,39 @@ import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import { FaMessage } from "react-icons/fa6";
 import ChefSueVisualizer from "../../components/ChefSueVisualizer/ChefSueVisualizer";
-import { SimData1, SimData2, SimData3, SimData4, type MessageSimData } from "./SimData";
+import {
+  SimData1,
+  SimData2,
+  SimData3,
+  SimData4,
+  SimData5,
+  type MessageSimData,
+} from "./SimData";
 import { sleep } from "../../utils/tools";
 import { Theme } from "../../utils/globals";
+import { useGlobal, type Message } from "../../hooks/GlobalContext";
+import RecipeTile from "../../components/RecipeTile/RecipeTile";
+import { getRecipeById } from "../../utils/recipeData";
 
-type Message = {
-  sender?: string;
-  text: string;
-  thinking?: boolean;
-  audioSrc?: string;
-  recipe?: string;
-};
-
-const mockMessages: Message[] = [
-  { sender: "Chef Sue", text: "Hello! How can I help you cook today?" },
-  { sender: "You", text: "What can I make with eggs and tomatoes?" },
-  {
-    sender: "Chef Sue",
-    text: "You can make a delicious omelette! Let me fetch a recipe.",
-  },
-];
+// const mockMessages: Message[] = [
+//   { sender: "Chef Sue", text: "Hello! How can I help you cook today?" },
+//   { sender: "You", text: "What can I make with eggs and tomatoes?" },
+//   {
+//     sender: "Chef Sue",
+//     text: "You can make a delicious omelette! Let me fetch a recipe.",
+//   },
+// ];
 
 const ChefSue: React.FC = () => {
-  const [messages, setMessages] = useState(mockMessages);
   const [searchParams] = useSearchParams();
   const v = searchParams.get("v");
+  const { setAlert, messages, setMessages } = useGlobal();
 
   const resetMessages = () => setMessages([]);
 
   // Adds a new message to the messages array
   const addMessage = (msg: Message) => {
-    setMessages((prev) => [...prev, { sender: "Chef Sue", ...msg }]);
+    setMessages((prev: Message[]) => [...prev, { sender: "Chef Sue", ...msg }]);
   };
 
   // Appends/updates the last message by merging with the provided message object
@@ -48,8 +50,8 @@ const ChefSue: React.FC = () => {
       if (Object.keys(msg).includes("thinking")) {
         updated["thinking"] = msg.thinking;
       }
-      if (Object.keys(msg).includes('audioSrc')) {
-        updated['audioSrc'] = msg.audioSrc;
+      if (Object.keys(msg).includes("audioSrc")) {
+        updated["audioSrc"] = msg.audioSrc;
       }
       return [...prev.slice(0, -1), updated];
     });
@@ -73,7 +75,7 @@ const ChefSue: React.FC = () => {
       }
     };
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = async (e: KeyboardEvent) => {
       if (e.key === "[") {
         SimMessageData(SimData1);
       } else if (e.key === "]") {
@@ -81,7 +83,14 @@ const ChefSue: React.FC = () => {
       } else if (e.key === "\\") {
         SimMessageData(SimData3);
       } else if (e.key === ";") {
-        SimMessageData(SimData4);
+        SimMessageData(SimData4, 2000);
+        await sleep(800);
+        setAlert(
+          "Sue updated your profile",
+          "Added peanut allergy and lactose intolerance."
+        );
+      } else if (e.key === "'") {
+        SimMessageData(SimData5, 1700);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -114,6 +123,10 @@ function VoiceChatWithSue({ messages }: { messages: Message[] }) {
   const navigate = useNavigate();
   const lastMessage =
     messages && messages.length > 0 ? messages[messages.length - 1] : undefined;
+  const recipeData = lastMessage?.recipe
+    ? getRecipeById(lastMessage.recipe)
+    : undefined;
+
   return (
     <>
       <div
@@ -138,13 +151,43 @@ function VoiceChatWithSue({ messages }: { messages: Message[] }) {
             alignItems: "center",
           }}
         >
-          <div style={{ position: 'absolute', top: '8rem' }}>
-            <ChefSueVisualizer audioSrc={lastMessage?.audioSrc} disableSue={lastMessage?.sender == 'You'} />
+          <div style={{ position: "absolute", top: "8rem" }}>
+            <ChefSueVisualizer
+              audioSrc={lastMessage?.audioSrc}
+              disableSue={lastMessage?.sender == "You"}
+            />
           </div>
-          <div style={{ position: 'absolute', bottom: '14rem', width: '90vw' }}>
-            {lastMessage?.thinking ? (
-              <Thinking />
-            ) : (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "14rem",
+              width: "90vw",
+              display: "flex",
+              alignItems: "center",
+              flexDirection: 'column'
+            }}
+          >
+            {lastMessage?.thinking && <Thinking />}{" "}
+            {(
+              <div
+                style={{
+                  width: "100vw",
+                  display: "flex",
+                  height: recipeData ? '40vh' : '0vh',
+                  overflow: 'hidden',
+                  opacity: recipeData ? 1 : 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  position: "absolute",
+                  top: '-22vh',
+                  transition: 'height 900ms ease-in-out, opacity 900ms ease-in-out, top 500ms ease-in-out',
+                }}
+              >
+                {recipeData && <RecipeTile small={false} {...recipeData} />}
+              </div>
+            )}
+            {!lastMessage?.thinking && recipeData == undefined && (
               <span
                 style={{
                   fontSize: "1.25rem",
@@ -153,7 +196,9 @@ function VoiceChatWithSue({ messages }: { messages: Message[] }) {
                   textAlign: "center",
                 }}
               >
-                {lastMessage?.sender == "You" ? 'Listening...' : (lastMessage?.text || "How can I help today?")}
+                {lastMessage?.sender == "You"
+                  ? "Listening..."
+                  : lastMessage?.text || "How can I help today?"}
               </span>
             )}
           </div>
@@ -258,6 +303,7 @@ function ChatWithSue({
               const prevWasSame =
                 i > 0 ? messages[i - 1].sender == msg.sender : false;
               const senderIsSelf = msg.sender === "You";
+              const recipeData = msg.recipe ? getRecipeById(msg.recipe) : undefined;
               return (
                 <div
                   key={i}
@@ -275,13 +321,15 @@ function ChatWithSue({
                       alignSelf: senderIsSelf ? "flex-end" : "flex-start",
                       background: senderIsSelf ? "#d1fae5" : "#e0e7ef",
                       color: "#222",
-                      padding: "10px 16px",
+                      padding: recipeData ? 0 : "10px 16px",
                       borderRadius: "18px",
                       maxWidth: "70%",
                       boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
                     }}
                   >
-                    {msg.thinking ? <Thinking /> : <span>{msg.text}</span>}
+                    {msg.thinking && <Thinking />}
+                    {recipeData && !msg.thinking && <RecipeTile {...recipeData} small={true} />}
+                    {!msg.thinking && !msg.recipe && <span>{msg.text}</span>}
                   </div>
                 </div>
               );
@@ -295,7 +343,7 @@ function ChatWithSue({
               borderTop: "1px solid #e5e7eb",
               background: "#fff",
               position: "fixed",
-              bottom: "4rem",
+              bottom: "3.8rem",
             }}
           >
             <input

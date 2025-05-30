@@ -40,7 +40,8 @@ const Recipe: React.FC = () => {
         padding: "2rem 0",
       }}
     >
-      <Header title="Recipe: Beef Tacos" />
+      <Header style={{top: '0', position: 'fixed'}} title="Recipe: Beef Tacos" />
+      <div style={{height: '6vh'}} />
       <img
         src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
         alt="Tacos"

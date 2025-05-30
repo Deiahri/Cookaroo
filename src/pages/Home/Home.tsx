@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const RecommendedItems = () => (
   <>
     <RecipeTile
+      id="5a9b2-fd21e83-3c77b1-4f6c02e-91ab4fc"
       image="https://www.simplyrecipes.com/thmb/3R8GlHzhL5qigI173Ovk-Hiv0As=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Chinese-Orange-Chicken-LEAD-3-d2eb0aec5ec149c0b4ba7da2121cbabc.jpg"
       title="Orange Chicken"
       tags={["20 minutes", "gluten-free"]}
