@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import { FaMessage } from "react-icons/fa6";
 import ChefSueVisualizer from "../../components/ChefSueVisualizer/ChefSueVisualizer";
-import { SimData1, SimData2, type MessageSimData } from "./SimData";
+import { SimData1, SimData2, SimData3, SimData4, type MessageSimData } from "./SimData";
 import { sleep } from "../../utils/tools";
 import { Theme } from "../../utils/globals";
 
@@ -36,7 +36,7 @@ const ChefSue: React.FC = () => {
 
   // Adds a new message to the messages array
   const addMessage = (msg: Message) => {
-    setMessages((prev) => [...prev, { ...msg, sender: "Chef Sue" }]);
+    setMessages((prev) => [...prev, { sender: "Chef Sue", ...msg }]);
   };
 
   // Appends/updates the last message by merging with the provided message object
@@ -78,6 +78,10 @@ const ChefSue: React.FC = () => {
         SimMessageData(SimData1);
       } else if (e.key === "]") {
         SimMessageData(SimData2);
+      } else if (e.key === "\\") {
+        SimMessageData(SimData3);
+      } else if (e.key === ";") {
+        SimMessageData(SimData4);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
