@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ title, onBack, style }) => {
         alignItems: 'center',
         height: '8vh',
         background: '#fff',
-        boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
         position: 'relative',
         ...style,
       }}

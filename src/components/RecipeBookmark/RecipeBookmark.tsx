@@ -5,7 +5,7 @@ import { FaRegBookmark } from "react-icons/fa6";
 export default function RecipeBookmark({
   id,
   style,
-  size
+  size,
 }: {
   id?: string;
   style?: React.CSSProperties;
@@ -14,16 +14,20 @@ export default function RecipeBookmark({
   if (!id) {
     return;
   }
-  const { savedRecipes, setSavedRecipes } = useGlobal();
-  const isSaved = savedRecipes.includes(id);
+  const { savedRecipes, setSavedRecipes, setRecipeSaverActive, setActiveRecipeID } = useGlobal();
+  const isSaved = Object.keys(savedRecipes).map((key) => {
+    return key;
+  }).includes(id);
   const onClick = () => {
-    const newList = [...savedRecipes];
-    if (isSaved) {
-       newList.splice(newList.indexOf(id), 1);
-    } else {
-      newList.push(id);
-    }
-    setSavedRecipes(newList);
+    setRecipeSaverActive(true);
+    setActiveRecipeID(id);
+    // const newList = {...savedRecipes};
+    // if (isSaved) {
+    //    newList.splice(newList.indexOf(id), 1);
+    // } else {
+    //   newList.push(id);
+    // }
+    // setSavedRecipes(newList);
   }
   let Comp = isSaved ? FaBookmark : FaRegBookmark;
   return <Comp size={size} onClick={onClick} style={{ ...style }} />;

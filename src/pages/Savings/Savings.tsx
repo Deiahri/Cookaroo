@@ -33,9 +33,10 @@ const Savings: React.FC = () => {
         alignItems: "flex-start",
         justifyContent: "flex-start",
         flexDirection: "column",
+        paddingTop: 64
       }}
     >
-      <Header title={"Total Savings"} />
+      <Header style={{ position: 'fixed', top: 0 }} title={"Total Savings"} />
       <div
         style={{
           display: "flex",

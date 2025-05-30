@@ -8,7 +8,7 @@ type RecipeTagProps = {
   small?: boolean;
 };
 
-const RecipeTags: React.FC<RecipeTagProps> = ({ tags, small = false }) => (
+export const RecipeTags: React.FC<RecipeTagProps> = ({ tags, small = false }) => (
   <div
     style={{
       display: "flex",
@@ -147,7 +147,7 @@ const RecipeTile: React.FC<RecipeTileProps> = ({
       >
         {description}
       </span>
-      <RecipeBookmark
+      {!small && <RecipeBookmark
         size={"1.5rem"}
         style={{
           position: "absolute",
@@ -155,7 +155,7 @@ const RecipeTile: React.FC<RecipeTileProps> = ({
           bottom: "1rem",
         }}
         id={id}
-      />
+      />}
       <FaArrowCircleRight
         onClick={goToRecipePage}
         color={"#333"}
