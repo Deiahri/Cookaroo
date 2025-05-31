@@ -17,7 +17,8 @@ type GlobalContextType = {
   // Alert facet
   alertTitle: string | undefined;
   alertSubtitle: string | undefined;
-  setAlert: (title?: string, subtitle?: string) => void;
+  setAlert: (title?: string, subtitle?: string, showMS?: number) => void;
+  showAlertMS: number;
   // Add other facets here as needed
 };
 
@@ -52,10 +53,12 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   // Alert state
   const [alertTitle, setAlertTitle] = useState<string | undefined>("");
   const [alertSubtitle, setAlertSubtitle] = useState<string | undefined>("");
+  const [showAlertMS, setShowAlertMS] = useState(1500);
 
-  const setAlert = (title?: string, subtitle?: string) => {
+  const setAlert = (title?: string, subtitle?: string, showMS?: number) => {
     setAlertTitle(title);
     setAlertSubtitle(subtitle);
+    setShowAlertMS(showMS||1500);
   };
 
   // Add other facets' state and handlers here
@@ -74,6 +77,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
         setRecipeSaverActive,
         activeRecipeID,
         setActiveRecipeID,
+        showAlertMS
         // Add other facets here
       }}
     >

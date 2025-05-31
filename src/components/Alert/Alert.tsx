@@ -4,7 +4,7 @@ import styles from './Alert.module.css';
 import { useLocation } from "react-router-dom";
 
 const Alert: React.FC = () => {
-  const { alertTitle, alertSubtitle, setAlert } = useGlobal();
+  const { alertTitle, alertSubtitle, setAlert, showAlertMS } = useGlobal();
   const [visible, setVisible] = useState(false);
   const location = useLocation();
   const isHomeMain = location.pathname === "/main/home";
@@ -17,7 +17,7 @@ const Alert: React.FC = () => {
         setTimeout(() => {
           setAlert(undefined, undefined);
         }, 500);
-      }, 4000);
+      }, showAlertMS);
       return () => clearTimeout(timer);
     } else {
       setVisible(false);

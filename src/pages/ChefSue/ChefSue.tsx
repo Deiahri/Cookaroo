@@ -90,7 +90,7 @@ const ChefSue: React.FC = () => {
           "Added peanut allergy and lactose intolerance."
         );
       } else if (e.key === "'") {
-        SimMessageData(SimData5, 1700);
+        SimMessageData(SimData5, 3000);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -105,7 +105,7 @@ const ChefSue: React.FC = () => {
         size={"1.75rem"}
         style={{
           position: "fixed",
-          top: "1rem",
+          top: "1.4rem",
           right: "1rem",
           zIndex: 100,
           opacity: messages.length === 0 ? 0.4 : 1,
@@ -278,7 +278,7 @@ function ChatWithSue({
             style={{
               flex: 1,
               overflowY: "auto",
-              padding: "70px 24px",
+              padding: "80px 24px",
               paddingBottom: "145px",
               display: "flex",
               flexDirection: "column",
@@ -344,6 +344,7 @@ function ChatWithSue({
               background: "#fff",
               position: "fixed",
               bottom: "3.8rem",
+              width: '100%'
             }}
           >
             <input
@@ -357,6 +358,7 @@ function ChatWithSue({
                 border: "1px solid #d1d5db",
                 marginRight: "12px",
                 fontSize: "16px",
+                width: '61.5vw'
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSend();

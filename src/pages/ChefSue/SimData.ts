@@ -349,7 +349,7 @@ export const SimData5: MessageSimData[] = [
   },
   {
     text: "fettuccine",
-    delay: 700,
+    delay: 900,
   },
   {
     text: "from",
