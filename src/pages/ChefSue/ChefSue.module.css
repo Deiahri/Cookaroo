@@ -1,0 +1,12 @@
+.floatIn {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: floatInAnim 0.2s ease-in-out forwards;
+}
+
+@keyframes floatInAnim {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -14,10 +14,14 @@ export default function RecipeBookmark({
   if (!id) {
     return;
   }
-  const { savedRecipes, setSavedRecipes, setRecipeSaverActive, setActiveRecipeID } = useGlobal();
-  const isSaved = Object.keys(savedRecipes).map((key) => {
-    return key;
-  }).includes(id);
+  const { savedRecipes, setRecipeSaverActive, setActiveRecipeID } = useGlobal();
+  const allRecipes: string[] = [];
+  Object.keys(savedRecipes).forEach((s) => {
+    for (let item of savedRecipes[s]) {
+      allRecipes.push(item);
+    }
+  });
+  const isSaved = allRecipes.includes(id);
   const onClick = () => {
     setRecipeSaverActive(true);
     setActiveRecipeID(id);

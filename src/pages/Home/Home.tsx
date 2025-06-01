@@ -61,7 +61,7 @@ const TryCuisines = () => (
         height: 90,
         borderRadius: "50%",
         objectFit: "cover",
-        border: "1px solid #eee"
+        border: "1px solid #0008"
       }}
       />
       <span style={{ marginTop: "0.5rem", fontSize: "1rem" }}>Chinese</span>
@@ -75,7 +75,7 @@ const TryCuisines = () => (
         height: 90,
         borderRadius: "50%",
         objectFit: "cover",
-        border: "1px solid #eee"
+        border: "1px solid #0008"
       }}
       />
       <span style={{ marginTop: "0.5rem", fontSize: "1rem" }}>Italian</span>
@@ -89,49 +89,35 @@ const TryCuisines = () => (
         height: 90,
         borderRadius: "50%",
         objectFit: "cover",
-        border: "1px solid #eee"
+        border: "1px solid #0008"
       }}
       />
       <span style={{ marginTop: "0.5rem", fontSize: "1rem" }}>Mexican</span>
     </div>
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       <img
-      src="https://loveandgoodstuff.com/wp-content/uploads/2020/08/classic-ground-beef-tacos-1200x1200.jpg"
+      src="https://www.johansens.com/wp-content/uploads/2021/02/French-Food-97-e1689959796172.jpg"
       alt="Beef Tacos"
       style={{
         width: 90,
         height: 90,
         borderRadius: "50%",
         objectFit: "cover",
-        border: "1px solid #eee"
+        border: "1px solid #0008"
       }}
       />
-      <span style={{ marginTop: "0.5rem", fontSize: "1rem" }}>Mexican</span>
-    </div>
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <img
-      src="https://loveandgoodstuff.com/wp-content/uploads/2020/08/classic-ground-beef-tacos-1200x1200.jpg"
-      alt="Beef Tacos"
-      style={{
-        width: 90,
-        height: 90,
-        borderRadius: "50%",
-        objectFit: "cover",
-        border: "1px solid #eee"
-      }}
-      />
-      <span style={{ marginTop: "0.5rem", fontSize: "1rem" }}>Mexican</span>
+      <span style={{ marginTop: "0.5rem", fontSize: "1rem" }}>French</span>
     </div>
   </div>
 );
 
 const sections = [
+  // {
+  //   title: "Recommended for You",
+  //   content: <RecommendedItems />,
+  // },
   {
-    title: "Recommended for You",
-    content: <RecommendedItems />,
-  },
-  {
-    title: "Trending Swaps",
+    title: "Trending Recipes",
     content: <TopSellers />,
   },
   {
@@ -156,8 +142,8 @@ const Home: React.FC = () => {
         overflowX: "hidden",
       }}
     >
-      <h1 style={{ margin: 0, fontSize: "1.5rem", marginBottom: "1rem" }}>
-        Howdy, Nicholas!
+      <h1 style={{ margin: 0, marginTop: '2rem', fontSize: "1.5rem", marginBottom: "1rem" }}>
+        Howdy, Stephen!
       </h1>
 
       {/* Search Bar */}

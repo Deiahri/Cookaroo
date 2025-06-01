@@ -33,7 +33,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = () => {
   }
   const buttons: NavButton[] = [
     { label: "Home", icon: <MdHomeFilled onClick={() => nav('/main/home')} size={24} color={iconColor} /> },
-    { label: "Savings", icon: <FaChartLine onClick={() => nav('/main/savings')} size={24} color={iconColor} /> },
+    // { label: "Savings", icon: <FaChartLine onClick={() => nav('/main/savings')} size={24} color={iconColor} /> },
     { label: "Chef Sue", icon: <LuChefHat onClick={() => nav('/main/sue')} size={24} color={iconColor} /> },
     { label: "Recipes", icon: <FaBookmark onClick={() => nav('/main/saved-recipes')} size={20} color={iconColor} /> },
     { label: "Profile", icon: <IoPerson onClick={() => nav('/main/profile')} size={24} color={iconColor} /> },

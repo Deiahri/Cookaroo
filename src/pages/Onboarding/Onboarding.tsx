@@ -3,7 +3,7 @@ import { useColorTheme } from "../../hooks/useColorTheme";
 import { FaSun, FaMoon } from "react-icons/fa";
 import Button from "../../components/Button/Button";
 import ButtonSecondary from "../../components/ButtonSecondary/ButtonSecondary";
-import Pricing from '../../assets/pricing.png';
+import Pricing from "../../assets/pricing.png";
 
 // Define your page components
 function PickATheme({ onComplete }: { onComplete: () => void }) {
@@ -102,10 +102,291 @@ function PickATheme({ onComplete }: { onComplete: () => void }) {
   );
 }
 
+// Define your page components
+function DietarySelectGroup({
+  label,
+  options,
+  selected,
+  onSelect,
+  onRemove,
+  placeholder,
+}: {
+  label: string;
+  options: string[];
+  selected: string[];
+  onSelect: (value: string) => void;
+  onRemove: (value: string) => void;
+  placeholder: string;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "start",
+      }}
+    >
+      <span style={{ fontSize: "1.1rem" }}>{label}</span>
+      <CustomSelect
+        options={options}
+        selected={selected}
+        onSelect={onSelect}
+        placeholder={placeholder}
+      />
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "0.5rem",
+          marginTop: "0.5rem",
+        }}
+      >
+        {selected.map((item) => (
+          <div
+            key={item}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              padding: "0.25rem 0.5rem",
+              backgroundColor: Theme.orange,
+              borderRadius: "3rem",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
+            onClick={() => onRemove(item)}
+          >
+            <span
+              style={{
+                color: "white",
+                fontWeight: 600,
+                lineHeight: "1.5rem",
+                marginRight: 2,
+                fontSize: '0.8rem'
+              }}
+            >
+              {item}
+            </span>
+            <LuX color={"white"} size={14} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Custom Select component
+function CustomSelect({
+  options,
+  selected,
+  onSelect,
+  placeholder,
+}: {
+  options: string[];
+  selected: string[];
+  onSelect: (value: string) => void;
+  placeholder: string;
+}) {
+  const { colors } = useColorTheme();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div style={{ position: "relative", width: "100%" }}>
+      <div
+        tabIndex={0}
+        style={{
+          width: "100%",
+          padding: "0.5rem 1rem",
+          borderRadius: "0.5rem",
+          border: "1px solid #0004",
+          background: colors.background,
+          cursor: "pointer",
+          userSelect: "none",
+          color: colors.text,
+          boxSizing: "border-box",
+        }}
+        onClick={() => setOpen((v) => !v)}
+        onBlur={() => setOpen(false)}
+      >
+        <span style={{ color: selected.length === 0 ? colors.textSecondary : colors.text }}>
+          {selected.length === 0 ? placeholder : "Select more..."}
+        </span>
+      </div>
+      {open && (
+        <div
+          style={{
+            position: "absolute",
+            top: "110%",
+            left: 0,
+            width: "100%",
+            background: colors.background,
+            border: "1px solid #0004",
+            borderRadius: "0.5rem",
+            zIndex: 10,
+            boxShadow: "0 2px 8px #0002",
+            maxHeight: 200,
+            overflowY: "auto",
+          }}
+        >
+          {options.map((option) => (
+            <div
+              key={option}
+              style={{
+                padding: "0.5rem 1rem",
+                cursor: "pointer",
+                background: selected.includes(option) ? Theme.orange : "transparent",
+                color: selected.includes(option) ? "#fff" : colors.text,
+                fontWeight: selected.includes(option) ? 600 : 400,
+                borderRadius: "0.5rem",
+                margin: "2px 4px",
+                transition: "background 0.2s",
+              }}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                onSelect(option);
+                setOpen(false);
+              }}
+            >
+              {option}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Dietary({ onComplete }: { onComplete: () => void }) {
+  useEffect(() => {
+    onComplete();
+  }, []);
+
+  const [dietTypes, setDietTypes] = useState<string[]>([]);
+  const [healthConditions, setHealthConditions] = useState<string[]>([]);
+  const [allergies, setAllergies] = useState<string[]>([]);
+
+  const dietOptions = [
+    "None",
+    "Vegetarian",
+    "Vegan",
+    "Pescatarian",
+    "Keto",
+    "Paleo",
+    "Mediterranean",
+    "Low-Carb",
+    "Gluten-Free",
+  ];
+  const healthConditionOptions = [
+    "None",
+    "Diabetes",
+    "Hypertension",
+    "High Cholesterol",
+    "Celiac Disease",
+    "IBS",
+    "Heart Disease",
+  ];
+  const allergyOptions = [
+    "None",
+    "Peanuts",
+    "Tree Nuts",
+    "Dairy",
+    "Eggs",
+    "Soy",
+    "Wheat",
+    "Fish",
+    "Shellfish",
+    "Sesame",
+  ];
+
+  const handleSelect = (
+    value: string,
+    selected: string[],
+    setSelected: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    if (value === "None") {
+      setSelected([]);
+    } else if (!selected.includes(value)) {
+      setSelected([...selected, value]);
+    }
+  };
+
+  const handleRemove = (
+    value: string,
+    selected: string[],
+    setSelected: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    setSelected(selected.filter((item) => item !== value));
+  };
+
+  const { colors } = useColorTheme();
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        transition: "color 0.3s, background-color 0.3s",
+        width: "70vw",
+      }}
+    >
+      <span
+        style={{
+          fontSize: "1.5rem",
+          marginBottom: 24,
+          color: colors.text,
+          fontWeight: 500,
+          transition: "color 0.3s",
+        }}
+      >
+        Dietary Preferences
+      </span>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          gap: "1rem",
+        }}
+      >
+        <DietarySelectGroup
+          label="Diet Type"
+          options={dietOptions}
+          selected={dietTypes}
+          onSelect={(value) => handleSelect(value, dietTypes, setDietTypes)}
+          onRemove={(value) => handleRemove(value, dietTypes, setDietTypes)}
+          placeholder="Select diet type..."
+        />
+        <DietarySelectGroup
+          label="Health Conditions"
+          options={healthConditionOptions}
+          selected={healthConditions}
+          onSelect={(value) =>
+            handleSelect(value, healthConditions, setHealthConditions)
+          }
+          onRemove={(value) =>
+            handleRemove(value, healthConditions, setHealthConditions)
+          }
+          placeholder="Select health condition..."
+        />
+        <DietarySelectGroup
+          label="Allergies"
+          options={allergyOptions}
+          selected={allergies}
+          onSelect={(value) => handleSelect(value, allergies, setAllergies)}
+          onRemove={(value) => handleRemove(value, allergies, setAllergies)}
+          placeholder="Select allergy..."
+        />
+      </div>
+    </div>
+  );
+}
+
 import { FaCarrot, FaAppleAlt } from "react-icons/fa";
 import { Theme } from "../../utils/globals";
 import ChefSueVisualizer from "../../components/ChefSueVisualizer/ChefSueVisualizer";
 import { useNavigate } from "react-router-dom";
+import { LuX } from "react-icons/lu";
 function SwapYourIngredients({ onComplete }: { onComplete: () => void }) {
   useEffect(() => {
     onComplete();
@@ -216,11 +497,11 @@ function RealTimePricing({ onComplete }: { onComplete: () => void }) {
         style={{
           width: "50vw",
           height: "50vw",
-          border: '1px solid #0004',
+          border: "1px solid #0004",
           objectFit: "cover",
           display: "block",
           margin: "0 auto",
-          borderRadius: '50%',
+          borderRadius: "50%",
         }}
       />
       <span
@@ -296,7 +577,7 @@ function MeetChefSue({ onComplete }: { onComplete: () => void }) {
           fontWeight: 300,
           width: "90%",
           fontSize: "1.24rem",
-          marginBottom: '0rem'
+          marginBottom: "0rem",
         }}
       >
         Find recipes effortlessly
@@ -307,11 +588,11 @@ function MeetChefSue({ onComplete }: { onComplete: () => void }) {
           // marginTop: 24,
           fontWeight: 300,
           width: "95%",
-          fontSize: "1.24rem"
+          fontSize: "1.24rem",
         }}
       >
-        Get <span style={{ fontWeight: 600 }}>step-by-step cooking help</span> and all
-        your kitchen questions answered.
+        Get <span style={{ fontWeight: 600 }}>step-by-step cooking help</span>{" "}
+        and all your kitchen questions answered.
       </span>
     </div>
   );
@@ -351,8 +632,12 @@ const carouselPages = [
     ),
   },
   {
-    id: 3,
+    id: 4,
     render: (onComplete: () => void) => <MeetChefSue onComplete={onComplete} />,
+  },
+  {
+    id: 5,
+    render: (onComplete: () => void) => <Dietary onComplete={onComplete} />,
   },
 ];
 
@@ -371,7 +656,7 @@ export default function Onboarding() {
   const handleNext = () => {
     if (completed[position]) {
       if (position == carouselPages.length - 1) {
-        navigate('/main/home');
+        navigate("/main/home");
         return;
       }
       setPosition((prev) =>
@@ -423,10 +708,8 @@ export default function Onboarding() {
         >
           Previous
         </ButtonSecondary>
-        <Button
-          onClick={handleNext}
-        >
-          { position != carouselPages.length - 1 ? 'Next' : 'Let\'s Go!'}
+        <Button onClick={handleNext}>
+          {position != carouselPages.length - 1 ? "Next" : "Let's Go!"}
         </Button>
       </div>
     </div>

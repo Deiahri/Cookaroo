@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import ReactIcon from '../../assets/react.svg';
+import logo from '../../assets/logo.png';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import { useColorTheme } from "../../hooks/useColorTheme";
 import { sleep } from "../../utils/tools";
 import { useNavigate } from "react-router-dom";
 
-const logoUrl = ReactIcon;
+const logoUrl = logo;
 
 const Login: React.FC = () => {
   const { setLoading } = useColorTheme();

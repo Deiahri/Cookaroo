@@ -462,3 +462,12 @@ export const SimData5: MessageSimData[] = [
     recipe: '68f45-c6ae9a0-800565-8d3a84c-7c0b371'
   }
 ];
+
+
+export const SimData6: MessageSimData[] = [
+  {
+    text: "I don't know bruh.",
+    delay: 250,
+    // audioSrc: "/v5.mp3",
+  }
+];

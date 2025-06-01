@@ -1,5 +1,12 @@
+@font-face {
+  font-family: 'MyCustomFont';
+  src: url('./assets/fonts/open-sauce/OpenSauceOne-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'MyCustomFont', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 

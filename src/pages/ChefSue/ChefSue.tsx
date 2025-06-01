@@ -4,7 +4,7 @@ import { FaMicrophone } from "react-icons/fa";
 import { RiArrowRightCircleFill, RiResetLeftFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-import { FaMessage } from "react-icons/fa6";
+import { FaFile, FaMessage } from "react-icons/fa6";
 import ChefSueVisualizer from "../../components/ChefSueVisualizer/ChefSueVisualizer";
 import {
   SimData1,
@@ -12,6 +12,7 @@ import {
   SimData3,
   SimData4,
   SimData5,
+  SimData6,
   type MessageSimData,
 } from "./SimData";
 import { sleep } from "../../utils/tools";
@@ -19,6 +20,7 @@ import { Theme } from "../../utils/globals";
 import { useGlobal, type Message } from "../../hooks/GlobalContext";
 import RecipeTile from "../../components/RecipeTile/RecipeTile";
 import { getRecipeById } from "../../utils/recipeData";
+import styles from "./ChefSue.module.css";
 
 // const mockMessages: Message[] = [
 //   { sender: "Chef Sue", text: "Hello! How can I help you cook today?" },
@@ -91,6 +93,8 @@ const ChefSue: React.FC = () => {
         );
       } else if (e.key === "'") {
         SimMessageData(SimData5, 3000);
+      } else if (e.key === "/") {
+        SimMessageData(SimData6, 2000);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -167,7 +171,7 @@ function VoiceChatWithSue({ messages }: { messages: Message[] }) {
               flexDirection: "column",
             }}
           >
-            {lastMessage?.thinking && <Thinking />}{" "}
+            {lastMessage?.thinking && <Thinking color={Theme.almostWhite} />}{" "}
             {
               <div
                 style={{
@@ -240,6 +244,38 @@ function ChatWithSue({
   messages: Message[];
   // setMessages: (s: Message[]) => void;
 }) {
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom on mount and when messages change (if user is near bottom)
+  React.useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    // If user is within 120px of bottom, auto-scroll
+    const isNearBottom =
+      el.scrollHeight - el.scrollTop - el.clientHeight < 300;
+
+    if (isNearBottom) {
+      scrollToBottom();
+    }
+    // if (isNearBottom || messages.length === 1) {
+    // }
+  }, [messages]);
+
+  // On mount, always scroll to bottom
+  React.useEffect(() => {
+    scrollToBottom();
+  }, []);
+
+  const scrollToBottom = () => {
+    const el = scrollRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+    }
+  };
+
+  // console.log(scrollRef.current?.scrollTop);
+
   return (
     <div
       style={{
@@ -251,10 +287,10 @@ function ChatWithSue({
         justifyContent: "flex-start",
       }}
     >
-      <div style={{ flex: "none" }}>
+      <div style={{ flex: "none" }} >
         <div
           style={{
-            minHeight: "92vh",
+            maxHeight: "92vh",
             width: "100vw",
             display: "flex",
             flexDirection: "column",
@@ -268,13 +304,16 @@ function ChatWithSue({
           <div
             style={{
               flex: 1,
-              overflowY: "auto",
               padding: "80px 24px",
-              paddingBottom: "145px",
+              paddingBottom: 75,
+              boxSizing: 'border-box',
               display: "flex",
               flexDirection: "column",
               gap: "8px",
+              overflowY: 'auto',
+              minHeight: '90vh'
             }}
+            ref={scrollRef}
           >
             {messages.length == 0 && (
               <div
@@ -290,9 +329,9 @@ function ChatWithSue({
                 </span>
               </div>
             )}
-            {messages.map((msg, i) => {
+            {messages.map((msg, i, arr) => {
               const prevWasSame =
-                i > 0 ? messages[i - 1].sender == msg.sender : false;
+                i > 0 ? arr[i - 1].sender == msg.sender : false;
               const senderIsSelf = msg.sender === "You";
               const recipeData = msg.recipe
                 ? getRecipeById(msg.recipe)
@@ -306,25 +345,41 @@ function ChatWithSue({
                     alignItems: senderIsSelf ? "end" : "start",
                     flexDirection: "column",
                   }}
+                  className={styles.floatIn}
                 >
                   {!prevWasSame && <span>{msg.sender}</span>}
                   <div
-                    key={i}
                     style={{
                       alignSelf: senderIsSelf ? "flex-end" : "flex-start",
-                      background: senderIsSelf ? "#d1fae5" : "#e0e7ef",
-                      color: "#222",
+                      background: senderIsSelf ? "#0002" : Theme.orange,
+                      color: senderIsSelf ? Theme.darkGrey : "#fff",
                       padding: recipeData ? 0 : "10px 16px",
                       borderRadius: "18px",
                       maxWidth: "70%",
                       boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
                     }}
                   >
-                    {msg.thinking && <Thinking />}
+                    {msg.thinking && <Thinking color={Theme.almostWhite}/>}
                     {recipeData && !msg.thinking && (
                       <RecipeTile {...recipeData} small={true} />
                     )}
-                    {!msg.thinking && !msg.recipe && <span>{msg.text}</span>}
+                    {msg.attatchment && (
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.25rem",
+                          alignItems: "center",
+                        }}
+                      >
+                        <FaFile />
+                        <span style={{ fontWeight: 700 }}>
+                          {msg.attatchment}
+                        </span>
+                      </div>
+                    )}
+                    {!msg.thinking && !msg.recipe && !msg.attatchment && (
+                      <span>{msg.text}</span>
+                    )}
                   </div>
                 </div>
               );
@@ -337,15 +392,29 @@ function ChatWithSue({
   );
 }
 
-export function ChefSueKeyboard({ style, onSend }: { style?: React.CSSProperties, onSend?: (...args: any) => any }) {
+export function ChefSueKeyboard({
+  style,
+  onSend,
+}: {
+  style?: React.CSSProperties;
+  onSend?: () => any;
+}) {
   const navigate = useNavigate();
-  const { setMessages, messages } = useGlobal();
+  const { setMessages } = useGlobal();
   const [input, setInput] = useState("");
 
   const handleSend = () => {
     if (input.trim()) {
       onSend && onSend();
-      setMessages([...messages, { sender: "You", text: input }]);
+      setTimeout(
+        () => {
+          setMessages((messages) => [
+            ...messages,
+            { sender: "You", text: input },
+          ]);
+        },
+        onSend ? 1000 : 0
+      );
       setInput("");
     }
   };
@@ -360,7 +429,7 @@ export function ChefSueKeyboard({ style, onSend }: { style?: React.CSSProperties
         position: "fixed",
         bottom: "3.8rem",
         width: "100%",
-        ...style
+        ...style,
       }}
     >
       <input
@@ -372,9 +441,9 @@ export function ChefSueKeyboard({ style, onSend }: { style?: React.CSSProperties
           padding: "10px 14px",
           borderRadius: "20px",
           border: "1px solid #d1d5db",
-          marginRight: "12px",
+          marginRight: "8px",
           fontSize: "16px",
-          width: "59vw",
+          width: "60vw",
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") handleSend();
@@ -384,7 +453,7 @@ export function ChefSueKeyboard({ style, onSend }: { style?: React.CSSProperties
         onClick={handleSend}
         style={{
           padding: "0.25rem",
-          background: "#10b981",
+          background: "#3b82f6",
           color: "#fff",
           border: "none",
           borderRadius: "50%",
@@ -421,14 +490,14 @@ export function ChefSueKeyboard({ style, onSend }: { style?: React.CSSProperties
   );
 }
 
-const Thinking: React.FC<{ size?: number }> = ({ size = 8 }) => {
+const Thinking: React.FC<{ size?: number, color?: string }> = ({ size = 8, color = Theme.orange }) => {
   const dotStyle: React.CSSProperties = {
     display: "inline-block",
     width: size,
     height: size,
     margin: `0 ${size * 0.15}px`,
     borderRadius: "50%",
-    background: Theme.orange,
+    background: color,
     animation: "thinking-bounce 1.2s infinite both",
   };
 

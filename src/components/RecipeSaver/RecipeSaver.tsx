@@ -2,6 +2,9 @@ import React from "react";
 import { useGlobal } from "../../hooks/GlobalContext";
 import { getRecipeById } from "../../utils/recipeData";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { Theme } from "../../utils/globals";
+import { BiPlus } from "react-icons/bi";
+import SavedRecipes from "../../pages/SavedRecipes/SavedRecipes";
 
 // Replace with your actual context import
 
@@ -46,11 +49,12 @@ const contentStyle: React.CSSProperties = {
   flexDirection: "row",
   flexWrap: "wrap",
   overflowY: "auto",
-  backgroundColor: '#0001'
+  backgroundColor: "#00000022",
 };
 
 const buttonStyle: React.CSSProperties = {
   margin: "1rem",
+  marginTop: "0.5rem",
   padding: "0.75rem",
   background: "#222",
   color: "#fff",
@@ -66,11 +70,36 @@ const RecipeSaver: React.FC = () => {
     setRecipeSaverActive,
     savedRecipes,
     setSavedRecipes,
+    activeRecipeID,
   } = useGlobal();
 
   if (!recipeSaverActive) return null;
 
+  const allRecipes: string[] = [];
+  Object.keys(savedRecipes).forEach((s) => {
+    for (let item of savedRecipes[s]) {
+      allRecipes.push(item);
+    }
+  });
+  const exists = allRecipes.includes(activeRecipeID);
+
   const handleRemoveAll = () => {
+    if (!exists) {
+      return;
+    }
+    const newSavedRecipes = { ...savedRecipes };
+    for (let listKey of Object.keys(newSavedRecipes)) {
+      const list = [...savedRecipes[listKey]];
+      if (list.includes(activeRecipeID)) {
+        list.splice(list.indexOf(activeRecipeID), 1);
+        newSavedRecipes[listKey] = list;
+      }
+    }
+    setSavedRecipes(newSavedRecipes);
+    // setRecipeSaverActive(false);
+  };
+
+  const handleClose = () => {
     // Implement removal logic here
     setRecipeSaverActive(false);
   };
@@ -80,14 +109,52 @@ const RecipeSaver: React.FC = () => {
       <div style={modalStyle}>
         <div style={headerStyle}>Saved Recipes</div>
         <div style={contentStyle}>
-          <RecipeListDisplay listName="Hello" />
-          <RecipeListDisplay listName="Hi" />
-          <RecipeListDisplay listName="What" />
-          <RecipeListDisplay listName="Whatss" />
-          <RecipeListDisplay listName="Whatxs" />
-          <RecipeListDisplay listName="Whats" />
+          {Object.keys(savedRecipes).map((key) => {
+            return <RecipeListDisplay key={key} listName={key} />;
+          })}
+          <div
+            style={{
+              width: 150,
+              boxSizing: "border-box",
+              height: 176,
+              marginBottom: 10,
+              borderRadius: 8,
+              overflow: "hidden",
+              border: "1px solid #0004",
+              backgroundColor: "#fff8",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "relative",
+            }}
+          >
+            <BiPlus size={"4rem"} color={Theme.darkGrey} />
+            <span style={{ color: Theme.darkGrey, lineHeight: 0 }}>
+              New List
+            </span>
+          </div>
         </div>
-        <button style={buttonStyle} onClick={handleRemoveAll}>
+        <button
+          style={{
+            ...buttonStyle,
+            marginBottom: 0,
+            marginTop: "0.75rem",
+            backgroundColor: Theme.orange,
+          }}
+          onClick={handleClose}
+        >
+          Done
+        </button>
+        <button
+          style={{
+            ...buttonStyle,
+            marginBottom: "0.75rem",
+            opacity: exists ? 1 : 0.5,
+          }}
+          onClick={handleRemoveAll}
+          disabled={!exists}
+        >
           Remove from all lists
         </button>
       </div>
@@ -107,7 +174,7 @@ const imageContainerStyle: React.CSSProperties = {
   alignItems: "start",
   height: 148,
   position: "relative",
-  backgroundColor: '#0003'
+  backgroundColor: "#fff8",
 };
 
 const imageStyle: React.CSSProperties = {
@@ -117,7 +184,7 @@ const imageStyle: React.CSSProperties = {
   objectFit: "cover",
   margin: 0,
   padding: 0,
-  display: "flex"
+  display: "flex",
 };
 
 const listNameStyle: React.CSSProperties = {
@@ -129,7 +196,7 @@ const listNameStyle: React.CSSProperties = {
 };
 
 const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({ listName }) => {
-  const { savedRecipes, activeRecipeID } = useGlobal();
+  const { savedRecipes, activeRecipeID, setSavedRecipes } = useGlobal();
   const recipes = savedRecipes?.[listName] || [];
 
   const imagesToShow = recipes
@@ -137,6 +204,16 @@ const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({ listName }) => {
     .map((recipeID) => getRecipeById(recipeID));
   // const extraCount = recipes.length - 4;
   const includesCurrentRecipe = recipes.includes(activeRecipeID);
+
+  const addToRecipeList = () => {
+    const newRecipes = [...recipes];
+    if (recipes && recipes.includes(activeRecipeID)) {
+      newRecipes.splice(newRecipes.indexOf(activeRecipeID), 1);
+    } else {
+      newRecipes.push(activeRecipeID);
+    }
+    setSavedRecipes({ ...savedRecipes, [listName]: newRecipes });
+  };
 
   return (
     <div
@@ -158,10 +235,11 @@ const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({ listName }) => {
           style={{
             width: "100%",
             height: "100%",
-            backgroundColor: includesCurrentRecipe ? "#0006" : 'transparent',
+            backgroundColor: includesCurrentRecipe ? "#fff6" : "transparent",
             position: "absolute",
             zIndex: 10,
           }}
+          onClick={() => addToRecipeList()}
         />
         {includesCurrentRecipe && (
           <FaRegCheckCircle
@@ -175,6 +253,19 @@ const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({ listName }) => {
               transform: "translate(50%, -50%)",
             }}
           />
+        )}
+        {imagesToShow.length == 0 && (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <span style={{ fontSize: "0.8rem" }}>Empty List</span>
+          </div>
         )}
         {imagesToShow.map((recipe: any, idx: number) => {
           // const hasExtra = idx === 3 && extraCount > 0;

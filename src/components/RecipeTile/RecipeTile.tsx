@@ -2,6 +2,7 @@ import React from "react";
 import { FaArrowCircleRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import RecipeBookmark from "../RecipeBookmark/RecipeBookmark";
+import { Theme } from "../../utils/globals";
 
 type RecipeTagProps = {
   tags: string[];
@@ -71,6 +72,7 @@ const RecipeTile: React.FC<RecipeTileProps> = ({
         flexShrink: 0,
         position: "relative" as const,
         boxSizing: "border-box" as const,
+        color: Theme.darkGrey
       }
     : {
         padding: "1rem",

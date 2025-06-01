@@ -24,6 +24,8 @@ const Recipe: React.FC = () => {
     setSelectedInstructions,
     setSelected,
     selected,
+    selectedInstructions,
+    setMessages,
   } = useGlobal();
   const navigate = useNavigate();
 
@@ -34,11 +36,8 @@ const Recipe: React.FC = () => {
     setSelectedInstructions([]);
   };
 
-  const onSend = () => {
-    navigate("/main/sue");
-  };
-
   const recipeID = getParams.get("id");
+
   if (!recipeID) {
     return <span>No recipe</span>;
   }
@@ -46,6 +45,36 @@ const Recipe: React.FC = () => {
   if (!recipeObj) {
     return <span>id invalid</span>;
   }
+
+  const onSend = () => {
+    setTimeout(() => {
+      setSelectMode(false);
+      setSelected([]);
+      setSelectedInstructions([]);
+      setMessages((messages) => {
+        const newMessages = [...messages];
+        newMessages.push({
+          text: "",
+          sender: "You",
+          recipe: recipeID,
+        });
+        return newMessages;
+      });
+    }, 300);
+    setTimeout(() => {
+      setMessages((messages) => {
+        const newMessages = [...messages];
+        newMessages.push({
+          text: "",
+          sender: "You",
+          attatchment:
+            selectedInstructions.length > 0 ? "Instructions" : "Ingredients",
+        });
+        return newMessages;
+      });
+    }, 600);
+    navigate("/main/sue");
+  };
 
   let recipeTitle = `Recipe: ${recipeObj.title}`;
   if (recipeTitle.length > 30) {
@@ -63,6 +92,7 @@ const Recipe: React.FC = () => {
         alignItems: "center",
         // padding: "2rem 0",
         paddingBottom: "7.5rem",
+        color: Theme.darkGrey
       }}
     >
       <div
@@ -131,16 +161,24 @@ const Recipe: React.FC = () => {
                 width: "100%",
                 display: "flex",
                 alignItems: "start",
-                justifyContent: 'start',
+                justifyContent: "start",
                 marginBottom: "0.5rem",
                 gap: "0.5rem",
                 flexShrink: 0,
-                flexWrap: "nowrap",
-                overflow: "scroll",
+                whiteSpace: "nowrap",
+                flexWrap: "wrap",
+                overflowX: "auto",
               }}
             >
               {selected.map((s) => {
-                return <SelectedItemDisplay />;
+                return <SelectedItemDisplay>{s.name}</SelectedItemDisplay>;
+              })}
+              {selectedInstructions.map((s) => {
+                return (
+                  <SelectedItemDisplay>
+                    {s.length > 8 ? s.substring(0, 8) + "..." : s}
+                  </SelectedItemDisplay>
+                );
               })}
             </div>
             <ChefSueKeyboard onSend={onSend} style={{ position: "unset" }} />
@@ -266,7 +304,7 @@ const Recipe: React.FC = () => {
           }}
         >
           <LuUtensils size={"2rem"} />
-          <span>{recipeObj.time} m</span>
+          <span>{recipeObj.servings} serv.</span>
         </div>
       </div>
 
@@ -312,7 +350,7 @@ const Recipe: React.FC = () => {
       {tab == "Nutrition" && <Nutrition recipeID={recipeID} />}
       {tab == "Ingredients" && <Ingredients recipeID={recipeID} />}
       {tab == "Instructions" && <Instructions recipeID={recipeID} />}
-      <div style={{ height: !selectMode ? "1.25rem" : "5rem" }} />
+      <div style={{ height: !selectMode ? "1.25rem" : "15rem" }} />
     </div>
   );
 };
@@ -325,6 +363,9 @@ const SelectedItemDisplay = ({ children }: { children?: React.ReactNode }) => {
         padding: "0.5rem",
         backgroundColor: "#0000001a",
         borderRadius: "0.5rem",
+        display: "flex",
+        flexWrap: "nowrap",
+        textWrap: "nowrap",
       }}
     >
       {children ?? "Nothing Selected"}
@@ -400,13 +441,7 @@ function Instructions({ recipeID }: { recipeID: string }) {
         }}
       >
         {InstructionGroup.map((group, i) => {
-          return (
-            <InstructionGroupComp
-              groupID={i.toString().padStart(2, "0")}
-              data={group}
-              key={i}
-            />
-          );
+          return <InstructionGroupComp data={group} key={i} />;
         })}
       </div>
       <div style={{ height: "2.5rem" }} />
@@ -416,39 +451,41 @@ function Instructions({ recipeID }: { recipeID: string }) {
 
 function InstructionGroupComp({
   data,
-  groupID,
-}: {
+}: // groupID,
+{
   data: InstructionGroup;
-  groupID: string;
+  // groupID: string;
 }) {
   const { selectedInstructions, setSelectedInstructions, selectMode } =
     useGlobal();
-  const selectInstruction = (id: number) => {
+  const selectInstruction = (s: string, isHead?: boolean) => {
     if (!selectMode) {
       return;
     }
     const newSI = [...selectedInstructions];
-    if (id == 0) {
-      if (selectedInstructions.includes(groupID + id)) {
-        for (let i = 0; i < 10; i++) {
-          if (newSI.includes(groupID + i)) {
-            newSI.splice(newSI.indexOf(groupID + i), 1);
+    const targetVal = s;
+    if (isHead) {
+      if (selectedInstructions.includes(targetVal)) {
+        newSI.splice(newSI.indexOf(targetVal), 1);
+        for (let step of data.steps) {
+          if (newSI.includes(step.text)) {
+            newSI.splice(newSI.indexOf(step.text), 1);
           }
         }
       } else {
-        for (let i = 0; i < 10; i++) {
-          if (newSI.includes(groupID + i)) {
+        for (let step of data.steps) {
+          if (newSI.includes(step.text)) {
             continue;
           }
-          newSI.push(groupID + i);
+          newSI.push(step.text);
         }
+        newSI.push(targetVal);
       }
     } else {
-      const totalID = groupID + id;
-      if (newSI.includes(totalID)) {
-        newSI.splice(newSI.indexOf(totalID), 1);
+      if (newSI.includes(targetVal)) {
+        newSI.splice(newSI.indexOf(targetVal), 1);
       } else {
-        newSI.push(totalID);
+        newSI.push(targetVal);
       }
     }
     setSelectedInstructions(newSI);
@@ -459,7 +496,7 @@ function InstructionGroupComp({
   return (
     <div>
       <div
-        onClick={() => selectInstruction(0)}
+        onClick={() => selectInstruction(data.name, true)}
         style={{
           display: "flex",
           height: !selectMode ? 28 : 60,
@@ -467,12 +504,12 @@ function InstructionGroupComp({
           boxSizing: "border-box",
           alignItems: "center",
           width: "100%",
-          backgroundColor: selectedInstructions.includes(groupID + 0)
+          backgroundColor: selectedInstructions.includes(data.name)
             ? "#bfb"
             : "transparent",
         }}
       >
-        <SelectButton selected={selectedInstructions.includes(groupID + 0)} />
+        <SelectButton selected={selectedInstructions.includes(data.name)} />
         <span style={{ fontSize: "1.25rem", fontWeight: 700 }}>
           {data.name}
         </span>
@@ -485,18 +522,19 @@ function InstructionGroupComp({
               paddingTop: "0.5rem",
               paddingBottom: "0.5rem",
               boxSizing: "border-box",
-              backgroundColor: selectedInstructions.includes(groupID + (i + 1))
+              backgroundColor: selectedInstructions.includes(step.text)
                 ? "#bfb"
                 : "transparent",
+              transition: "padding 200ms, background-color 200ms",
             }}
             key={i}
           >
             <div
               style={{ display: "flex", width: "100%", alignItems: "center" }}
-              onClick={() => selectInstruction(i + 1)}
+              onClick={() => selectInstruction(step.text)}
             >
               <SelectButton
-                selected={selectedInstructions.includes(groupID + (i + 1))}
+                selected={selectedInstructions.includes(step.text)}
               />
               <span
                 style={{
@@ -517,6 +555,7 @@ function InstructionGroupComp({
                   boxSizing: "border-box",
                   borderRadius: 10,
                   marginBottom: -10,
+                  border: "1px solid #0004",
                 }}
                 src={step.image}
               />
@@ -827,6 +866,17 @@ function Nutrition({ recipeID }: { recipeID: string }) {
         justifyContent: "center",
       }}
     >
+      <span
+        style={{
+          width: "100%",
+          padding: "0.5rem 2rem",
+          boxSizing: "border-box",
+          textAlign: "center",
+          opacity: 0.75
+        }}
+      >
+        Nutrition Per Serving
+      </span>
       <div
         style={{
           width: "100%",
