@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
+import type { IngredientItem } from "../utils/recipeData";
 export type RecipeMap = {
   [key: string]: string[];
 };
@@ -19,6 +20,12 @@ type GlobalContextType = {
   alertSubtitle: string | undefined;
   setAlert: (title?: string, subtitle?: string, showMS?: number) => void;
   showAlertMS: number;
+  selected: IngredientItem[];
+  setSelected: React.Dispatch<React.SetStateAction<IngredientItem[]>>;
+  selectedInstructions: String[];
+  setSelectedInstructions: React.Dispatch<React.SetStateAction<String[]>>;
+  selectMode: boolean;
+  setSelectMode: React.Dispatch<React.SetStateAction<boolean>>;
   // Add other facets here as needed
 };
 
@@ -55,6 +62,10 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   const [alertSubtitle, setAlertSubtitle] = useState<string | undefined>("");
   const [showAlertMS, setShowAlertMS] = useState(1500);
 
+  const [selectMode, setSelectMode] = useState(false);
+  const [selected, setSelected] = useState<Array<IngredientItem>>([]);
+  const [selectedInstructions, setSelectedInstructions] = useState<String[]>([]);
+
   const setAlert = (title?: string, subtitle?: string, showMS?: number) => {
     setAlertTitle(title);
     setAlertSubtitle(subtitle);
@@ -77,7 +88,13 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
         setRecipeSaverActive,
         activeRecipeID,
         setActiveRecipeID,
-        showAlertMS
+        showAlertMS,
+        selected,
+        setSelected,
+        selectMode,
+        setSelectMode,
+        selectedInstructions,
+        setSelectedInstructions,
         // Add other facets here
       }}
     >

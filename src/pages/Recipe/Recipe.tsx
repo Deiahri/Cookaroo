@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Header from "../../components/Header/Header";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   getRecipeById,
   type IngredientItem,
@@ -13,36 +13,29 @@ import { PiMoneyDuotone } from "react-icons/pi";
 import { LuUtensils } from "react-icons/lu";
 import styles from "./Recipe.module.css";
 
-// const ingredients = [
-//   "8 small corn tortillas",
-//   "2 cups cooked and shredded chicken",
-//   "1 cup shredded lettuce",
-//   "1/2 cup diced tomatoes",
-//   "1/2 cup shredded cheese",
-//   "1/4 cup chopped onions",
-//   "1/4 cup chopped cilantro",
-//   "Salsa, to taste",
-//   "Lime wedges, for serving",
-// ];
-
-// const recipeSteps = `
-// <ol>
-//   <li>Warm the corn tortillas in a skillet or microwave until soft.</li>
-//   <li>Fill each tortilla with shredded chicken.</li>
-//   <li>Top with lettuce, tomatoes, cheese, onions, and cilantro.</li>
-//   <li>Add salsa to taste.</li>
-//   <li>Serve with lime wedges on the side. Enjoy your tacos!</li>
-// </ol>
-// `;
-
-type tabs = "Nutrition" | "Ingredients" | "Instructions";
-const Tabs: tabs[] = ["Nutrition", "Ingredients", "Instructions"];
+type tabs = "Ingredients" | "Instructions" | "Nutrition";
+const Tabs: tabs[] = ["Ingredients", "Instructions", "Nutrition"];
 const Recipe: React.FC = () => {
   const [getParams, _] = useSearchParams();
-  const [tab, setTab] = useState<tabs>("Nutrition");
+  const [tab, setTab] = useState<tabs>("Ingredients");
+  const {
+    selectMode,
+    setSelectMode,
+    setSelectedInstructions,
+    setSelected,
+    selected,
+  } = useGlobal();
+  const navigate = useNavigate();
 
   const handleTabChange = (newTab: tabs) => {
+    setSelectMode(false);
     setTab(newTab);
+    setSelected([]);
+    setSelectedInstructions([]);
+  };
+
+  const onSend = () => {
+    navigate("/main/sue");
   };
 
   const recipeID = getParams.get("id");
@@ -58,6 +51,7 @@ const Recipe: React.FC = () => {
   if (recipeTitle.length > 30) {
     recipeTitle = recipeTitle.substring(0, 29).trim() + "...";
   }
+
   return (
     <div
       style={{
@@ -67,8 +61,8 @@ const Recipe: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        padding: "2rem 0",
-        paddingBottom: '7.5rem'
+        // padding: "2rem 0",
+        paddingBottom: "7.5rem",
       }}
     >
       <div
@@ -78,46 +72,98 @@ const Recipe: React.FC = () => {
           boxSizing: "border-box",
           position: "fixed",
           bottom: "4.3rem",
-          borderRadius: '0.7rem',
-          backgroundColor: '#fff',
-          border: '1px solid #0008',
+          borderRadius: "0.7rem",
+          backgroundColor: "#fff",
+          border: "1px solid #0008",
           zIndex: 100,
-          margin: '0 0.5rem'
+          margin: "0 0.5rem",
         }}
       >
-        <div style={{ display: "flex", gap: "1rem", width: "100%" }}>
-          <button
+        {!selectMode && (
+          <div style={{ display: "flex", gap: "1rem", width: "100%" }}>
+            <button
+              style={{
+                flex: 1,
+                padding: "0.75rem 1.25rem",
+                borderRadius: 6,
+                border: "1px solid #ccc",
+                background: Theme.orangeAccent,
+                cursor: "pointer",
+                fontWeight: 600,
+                color: "white",
+                fontSize: "1.1rem",
+              }}
+            >
+              Discuss with Chef Sue
+            </button>
+            <button
+              style={{
+                flex: 1,
+                padding: "0.75rem 1.25rem",
+                borderRadius: 6,
+                border: "1px solid #ccc",
+                background: Theme.orangeAccent,
+                cursor: "pointer",
+                fontWeight: 600,
+                color: "white",
+                fontSize: "1.1rem",
+              }}
+            >
+              Cook with Chef Sue
+            </button>
+          </div>
+        )}
+        {selectMode && (
+          <div
             style={{
-              flex: 1,
-              padding: "0.75rem 1.25rem",
-              borderRadius: 6,
-              border: "1px solid #ccc",
-              background: Theme.orangeAccent,
-              cursor: "pointer",
-              fontWeight: 600,
-              color: "white",
-              fontSize: "1.1rem",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              overflow: "hidden",
             }}
           >
-            Discuss with Chef Sue
-          </button>
-          <button
-            style={{
-              flex: 1,
-              padding: "0.75rem 1.25rem",
-              borderRadius: 6,
-              border: "1px solid #ccc",
-              background: Theme.orangeAccent,
-              cursor: "pointer",
-              fontWeight: 600,
-              color: "white",
-              fontSize: "1.1rem",
-            }}
-          >
-            Cook with Chef Sue
-          </button>
-        </div>
+            <span style={{ marginBottom: 3 }}>
+              Ask Sue to swap or answer questions
+            </span>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "start",
+                justifyContent: 'start',
+                marginBottom: "0.5rem",
+                gap: "0.5rem",
+                flexShrink: 0,
+                flexWrap: "nowrap",
+                overflow: "scroll",
+              }}
+            >
+              {selected.map((s) => {
+                return <SelectedItemDisplay />;
+              })}
+            </div>
+            <ChefSueKeyboard onSend={onSend} style={{ position: "unset" }} />
+            {/* <button
+              style={{
+                flex: 1,
+                padding: "0.75rem 1.25rem",
+                borderRadius: 6,
+                border: "1px solid #ccc",
+                background: Theme.orangeAccent,
+                cursor: "pointer",
+                fontWeight: 600,
+                color: "white",
+                fontSize: "1.1rem",
+                width: '100%'
+              }}
+            >
+              Ask Chef Sue
+            </button> */}
+          </div>
+        )}
       </div>
+
       <Header
         style={{ top: "0", position: "fixed", zIndex: 20 }}
         title={recipeTitle}
@@ -233,11 +279,16 @@ const Recipe: React.FC = () => {
           justifyContent: "center",
           paddingLeft: "1rem",
           paddingRight: "1rem",
-          marginTop: "1rem",
+          paddingTop: "1rem",
+          paddingBottom: "0.5rem",
           boxSizing: "border-box",
           alignItems: "center",
           marginBottom: "0.5rem",
-          height: "2rem",
+          height: "3rem",
+          position: "sticky",
+          backgroundColor: "white",
+          top: 70,
+          zIndex: 10,
         }}
       >
         {Tabs.map((name) => (
@@ -260,29 +311,251 @@ const Recipe: React.FC = () => {
       </div>
       {tab == "Nutrition" && <Nutrition recipeID={recipeID} />}
       {tab == "Ingredients" && <Ingredients recipeID={recipeID} />}
-      <div style={{ height: "1.25rem" }} />
+      {tab == "Instructions" && <Instructions recipeID={recipeID} />}
+      <div style={{ height: !selectMode ? "1.25rem" : "5rem" }} />
     </div>
   );
 };
 export default Recipe;
 
-type Ingredient = {
-  name: string;
-  quantity: string;
-  cost: number;
+const SelectedItemDisplay = ({ children }: { children?: React.ReactNode }) => {
+  return (
+    <div
+      style={{
+        padding: "0.5rem",
+        backgroundColor: "#0000001a",
+        borderRadius: "0.5rem",
+      }}
+    >
+      {children ?? "Nothing Selected"}
+    </div>
+  );
 };
-const organizationOptions = [
-  { value: "logical", label: "Logical" },
-  { value: "summarized", label: "Summarized" },
-];
+
+import {
+  type InstructionGroup,
+  type InstructionStep,
+} from "../../utils/recipeData";
+function Instructions({ recipeID }: { recipeID: string }) {
+  const { selectMode, setSelectMode, setSelectedInstructions } = useGlobal();
+  const InstructionGroup: InstructionGroup[] | undefined =
+    getRecipeById(recipeID)?.instructions;
+  if (!InstructionGroup) {
+    return <span>Instructions</span>;
+  }
+
+  const toggleSelect = () => {
+    setSelectMode((s) => !s);
+    setSelectedInstructions([]);
+  };
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        padding: "0rem 0rem",
+        boxSizing: "border-box",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "1rem",
+          boxSizing: "border-box",
+          width: "100%",
+          marginBottom: "0.5rem",
+          gap: "0.5rem",
+          backgroundColor: "white",
+          borderBottom: "1px solid #0004",
+          zIndex: 1,
+          position: "sticky",
+          top: 110,
+        }}
+      >
+        <button
+          style={{
+            padding: "0.75rem 1.25rem",
+            borderRadius: 6,
+            border: "1px solid #ccc",
+            background: Theme.orangeAccent,
+            cursor: "pointer",
+            fontWeight: 600,
+            color: "white",
+            fontSize: "1.25rem",
+            width: "100%",
+          }}
+          onClick={toggleSelect}
+        >
+          {!selectMode ? "Select" : "Selecting"}
+        </button>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          padding: "0rem 1rem",
+        }}
+      >
+        {InstructionGroup.map((group, i) => {
+          return (
+            <InstructionGroupComp
+              groupID={i.toString().padStart(2, "0")}
+              data={group}
+              key={i}
+            />
+          );
+        })}
+      </div>
+      <div style={{ height: "2.5rem" }} />
+    </div>
+  );
+}
+
+function InstructionGroupComp({
+  data,
+  groupID,
+}: {
+  data: InstructionGroup;
+  groupID: string;
+}) {
+  const { selectedInstructions, setSelectedInstructions, selectMode } =
+    useGlobal();
+  const selectInstruction = (id: number) => {
+    if (!selectMode) {
+      return;
+    }
+    const newSI = [...selectedInstructions];
+    if (id == 0) {
+      if (selectedInstructions.includes(groupID + id)) {
+        for (let i = 0; i < 10; i++) {
+          if (newSI.includes(groupID + i)) {
+            newSI.splice(newSI.indexOf(groupID + i), 1);
+          }
+        }
+      } else {
+        for (let i = 0; i < 10; i++) {
+          if (newSI.includes(groupID + i)) {
+            continue;
+          }
+          newSI.push(groupID + i);
+        }
+      }
+    } else {
+      const totalID = groupID + id;
+      if (newSI.includes(totalID)) {
+        newSI.splice(newSI.indexOf(totalID), 1);
+      } else {
+        newSI.push(totalID);
+      }
+    }
+    setSelectedInstructions(newSI);
+  };
+  // console.log(groupID);
+  console.log(selectedInstructions);
+
+  return (
+    <div>
+      <div
+        onClick={() => selectInstruction(0)}
+        style={{
+          display: "flex",
+          height: !selectMode ? 28 : 60,
+          paddingLeft: !selectMode ? 0 : 20,
+          boxSizing: "border-box",
+          alignItems: "center",
+          width: "100%",
+          backgroundColor: selectedInstructions.includes(groupID + 0)
+            ? "#bfb"
+            : "transparent",
+        }}
+      >
+        <SelectButton selected={selectedInstructions.includes(groupID + 0)} />
+        <span style={{ fontSize: "1.25rem", fontWeight: 700 }}>
+          {data.name}
+        </span>
+      </div>
+      {data.steps.map((step, i) => {
+        return (
+          <div
+            style={{
+              paddingLeft: !selectMode ? "1rem" : "3rem",
+              paddingTop: "0.5rem",
+              paddingBottom: "0.5rem",
+              boxSizing: "border-box",
+              backgroundColor: selectedInstructions.includes(groupID + (i + 1))
+                ? "#bfb"
+                : "transparent",
+            }}
+            key={i}
+          >
+            <div
+              style={{ display: "flex", width: "100%", alignItems: "center" }}
+              onClick={() => selectInstruction(i + 1)}
+            >
+              <SelectButton
+                selected={selectedInstructions.includes(groupID + (i + 1))}
+              />
+              <span
+                style={{
+                  transition: "height 0.2s",
+                }}
+              >
+                {i + 1}. {step.text}
+              </span>
+            </div>
+            {step.image && (
+              <img
+                style={{
+                  width: "95%",
+                  aspectRatio: 16 / 9,
+                  overflow: "hidden",
+                  objectFit: "cover",
+                  marginTop: 6,
+                  boxSizing: "border-box",
+                  borderRadius: 10,
+                  marginBottom: -10,
+                }}
+                src={step.image}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 function Ingredients({ recipeID }: { recipeID: string }) {
-  const [organization, setOrganization] = useState("logical");
+  const { selectMode, setSelectMode, selected, setSelected } = useGlobal();
   const recipeObj = getRecipeById(recipeID);
 
   if (!recipeObj || !recipeObj.ingredients) {
     return <span>No ingredients found.</span>;
   }
+
+  const toggleSelect = () => {
+    setSelectMode((s) => !s);
+    setSelected([]);
+  };
+
+  const toggleSelectedItem = (s: IngredientItem) => {
+    const newSelected = [...selected];
+    let index = newSelected.findIndex(
+      (item) =>
+        item.name === s.name &&
+        item.quantity === s.quantity &&
+        item.price === s.price
+    );
+    if (index != -1) {
+      newSelected.splice(index, 1);
+    } else {
+      newSelected.push(s);
+    }
+    setSelected(newSelected);
+  };
 
   // For demonstration, just use the full list for both organizations
   // You can implement different organizations as needed
@@ -299,6 +572,12 @@ function Ingredients({ recipeID }: { recipeID: string }) {
           boxSizing: "border-box",
           width: "100%",
           marginBottom: "0.5rem",
+          position: "sticky",
+          top: 110,
+          gap: "0.5rem",
+          backgroundColor: "white",
+          borderBottom: "1px solid #0004",
+          zIndex: 10,
         }}
       >
         <button
@@ -308,11 +587,29 @@ function Ingredients({ recipeID }: { recipeID: string }) {
             border: "1px solid #ccc",
             background: Theme.orangeAccent,
             cursor: "pointer",
-            width: "100%",
             fontWeight: 600,
             color: "white",
             fontSize: "1.25rem",
+            zIndex: 10,
           }}
+          onClick={toggleSelect}
+        >
+          {!selectMode ? "Select" : "Selecting"}
+        </button>
+        <button
+          style={{
+            padding: "0.75rem 1.25rem",
+            borderRadius: 6,
+            border: "1px solid #ccc",
+            background: Theme.orangeAccent,
+            cursor: "pointer",
+            fontWeight: 600,
+            color: "white",
+            fontSize: "1.25rem",
+            width: "100%",
+            opacity: selectMode ? 0.5 : 1,
+          }}
+          disabled={selectMode ? true : false}
         >
           Locate Ingredients
         </button>
@@ -326,7 +623,13 @@ function Ingredients({ recipeID }: { recipeID: string }) {
         }}
       >
         {ingredients.map((ing, idx) => (
-          <IngredientGroup key={idx} {...ing} />
+          <IngredientGroup
+            toggleSelectedItem={toggleSelectedItem}
+            selected={selected}
+            selectMode={selectMode}
+            key={idx}
+            {...ing}
+          />
         ))}
       </div>
       <div style={{ height: "1.5rem" }} />
@@ -334,7 +637,17 @@ function Ingredients({ recipeID }: { recipeID: string }) {
   );
 }
 
-function IngredientGroup({ name, ingredients }: IngredientPart) {
+function IngredientGroup({
+  name,
+  ingredients,
+  selected,
+  selectMode,
+  toggleSelectedItem,
+}: IngredientPart & {
+  selected: Array<IngredientItem>;
+  selectMode: boolean;
+  toggleSelectedItem: (s: IngredientItem) => void;
+}) {
   return (
     <div
       style={{
@@ -354,10 +667,33 @@ function IngredientGroup({ name, ingredients }: IngredientPart) {
         {name}
       </span>
       {ingredients.map((ingIte, i) => {
+        const index = selected.findIndex(
+          (item) =>
+            item.name === ingIte.name &&
+            item.quantity === ingIte.quantity &&
+            item.price === ingIte.price
+        );
+        const isSelected = index != -1;
+        const modifier = isSelected ? 3 : 1;
+        const st = (modifier * (i % 2 == 0 ? 8 : 16))
+          .toString()
+          .padStart(2, "0");
         return (
           <IngredientEntry
+            selected={isSelected}
+            selectMode={selectMode}
             key={i}
-            style={{ backgroundColor: i % 2 == 0 ? "#00000006" : "#00000012 " }}
+            style={{
+              backgroundColor:
+                i % 2 == 0
+                  ? isSelected
+                    ? "#00ff00" + st
+                    : "#000000" + st
+                  : isSelected
+                  ? "#00ff00" + st
+                  : "#000000" + st,
+            }}
+            toggleSelectedItem={toggleSelectedItem}
             {...ingIte}
           />
         );
@@ -371,7 +707,15 @@ function IngredientEntry({
   quantity,
   price,
   style,
-}: IngredientItem & { style?: React.CSSProperties }) {
+  selected,
+  selectMode,
+  toggleSelectedItem,
+}: IngredientItem & {
+  style?: React.CSSProperties;
+  selected: boolean;
+  selectMode: boolean;
+  toggleSelectedItem: (s: IngredientItem) => void;
+}) {
   return (
     <div
       style={{
@@ -383,9 +727,13 @@ function IngredientEntry({
         fontSize: "1rem",
         width: "100%",
         boxSizing: "border-box",
+        backgroundColor: "#020a",
+        transition: "background-color 100ms ease-in-out",
         ...style,
       }}
+      onClick={() => toggleSelectedItem({ name, quantity, price })}
     >
+      <SelectButton selected={selected} />
       <span style={{ flex: 2 }}>{name}</span>
       <span style={{ flex: 1, textAlign: "center" }}>{quantity}</span>
       <span style={{ flex: 1, textAlign: "right" }}>${price.toFixed(2)}</span>
@@ -393,9 +741,49 @@ function IngredientEntry({
   );
 }
 
+function SelectButton({ selected }: { selected: boolean }) {
+  const { selectMode } = useGlobal();
+  return (
+    <div
+      style={{
+        overflow: "visible",
+        width: selectMode ? 35 : 0,
+        transition: "width 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s",
+        opacity: selectMode ? 1 : 0,
+      }}
+    >
+      <div
+        style={{
+          width: 10,
+          height: 10,
+          margin: 5,
+          marginRight: 20,
+          transform: "scale(300%)",
+          boxSizing: "border-box",
+          borderRadius: "50%",
+          border: "1px solid #0004",
+          backgroundColor: !selected ? "white" : "#0a0",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <FaCheck
+          style={{ transition: "opacity 300ms", opacity: selected ? 1 : 0 }}
+          size={6}
+          color={"white"}
+        />
+      </div>
+    </div>
+  );
+}
+
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Theme } from "../../utils/globals";
+import { FaCheck } from "react-icons/fa";
+import { useGlobal } from "../../hooks/GlobalContext";
+import { ChefSueKeyboard } from "../ChefSue/ChefSue";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Nutrition({ recipeID }: { recipeID: string }) {
@@ -477,7 +865,8 @@ function Nutrition({ recipeID }: { recipeID: string }) {
                   fontSize: "0.8rem",
                   padding: "0.4rem",
                   borderRadius: "50%",
-                  width: 25,
+                  width: 15,
+                  height: 15,
                 }}
               >
                 <span>{nutrition.totalCarbohydrates}g</span>
@@ -514,7 +903,8 @@ function Nutrition({ recipeID }: { recipeID: string }) {
                   fontSize: "0.8rem",
                   padding: "0.4rem",
                   borderRadius: "50%",
-                  width: 25,
+                  width: 15,
+                  height: 15,
                 }}
               >
                 <span>{nutrition.totalFat}g</span>
@@ -551,7 +941,8 @@ function Nutrition({ recipeID }: { recipeID: string }) {
                   fontSize: "0.8rem",
                   padding: "0.4rem",
                   borderRadius: "50%",
-                  width: 25,
+                  width: 15,
+                  height: 15,
                 }}
               >
                 <span>{nutrition.protein}g</span>

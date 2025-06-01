@@ -114,7 +114,7 @@ const ChefSue: React.FC = () => {
         }}
         aria-disabled={messages.length === 0}
       />
-      <Comp messages={messages} setMessages={setMessages} />
+      <Comp messages={messages} />
     </>
   );
 };
@@ -164,29 +164,30 @@ function VoiceChatWithSue({ messages }: { messages: Message[] }) {
               width: "90vw",
               display: "flex",
               alignItems: "center",
-              flexDirection: 'column'
+              flexDirection: "column",
             }}
           >
             {lastMessage?.thinking && <Thinking />}{" "}
-            {(
+            {
               <div
                 style={{
                   width: "100vw",
                   display: "flex",
-                  height: recipeData ? '40vh' : '0vh',
-                  overflow: 'hidden',
+                  height: recipeData ? "40vh" : "0vh",
+                  overflow: "hidden",
                   opacity: recipeData ? 1 : 0,
                   justifyContent: "center",
                   alignItems: "center",
                   flexDirection: "column",
                   position: "absolute",
-                  top: '-22vh',
-                  transition: 'height 900ms ease-in-out, opacity 900ms ease-in-out, top 500ms ease-in-out',
+                  top: "-22vh",
+                  transition:
+                    "height 900ms ease-in-out, opacity 900ms ease-in-out, top 500ms ease-in-out",
                 }}
               >
                 {recipeData && <RecipeTile small={false} {...recipeData} />}
               </div>
-            )}
+            }
             {!lastMessage?.thinking && recipeData == undefined && (
               <span
                 style={{
@@ -234,21 +235,11 @@ function VoiceChatWithSue({ messages }: { messages: Message[] }) {
 
 function ChatWithSue({
   messages,
-  setMessages,
-}: {
+}: // setMessages,
+{
   messages: Message[];
-  setMessages: (s: Message[]) => void;
+  // setMessages: (s: Message[]) => void;
 }) {
-  const navigate = useNavigate();
-  const [input, setInput] = useState("");
-
-  const handleSend = () => {
-    if (input.trim()) {
-      setMessages([...messages, { sender: "You", text: input }]);
-      setInput("");
-    }
-  };
-
   return (
     <div
       style={{
@@ -303,7 +294,9 @@ function ChatWithSue({
               const prevWasSame =
                 i > 0 ? messages[i - 1].sender == msg.sender : false;
               const senderIsSelf = msg.sender === "You";
-              const recipeData = msg.recipe ? getRecipeById(msg.recipe) : undefined;
+              const recipeData = msg.recipe
+                ? getRecipeById(msg.recipe)
+                : undefined;
               return (
                 <div
                   key={i}
@@ -328,82 +321,102 @@ function ChatWithSue({
                     }}
                   >
                     {msg.thinking && <Thinking />}
-                    {recipeData && !msg.thinking && <RecipeTile {...recipeData} small={true} />}
+                    {recipeData && !msg.thinking && (
+                      <RecipeTile {...recipeData} small={true} />
+                    )}
                     {!msg.thinking && !msg.recipe && <span>{msg.text}</span>}
                   </div>
                 </div>
               );
             })}
           </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "16px",
-              borderTop: "1px solid #e5e7eb",
-              background: "#fff",
-              position: "fixed",
-              bottom: "3.8rem",
-              width: '100%'
-            }}
-          >
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
-              style={{
-                padding: "10px 14px",
-                borderRadius: "20px",
-                border: "1px solid #d1d5db",
-                marginRight: "12px",
-                fontSize: "16px",
-                width: '61.5vw'
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleSend();
-              }}
-            />
-            <button
-              onClick={handleSend}
-              style={{
-                padding: "0.25rem",
-                background: "#10b981",
-                color: "#fff",
-                border: "none",
-                borderRadius: "50%",
-                marginRight: "8px",
-                cursor: "pointer",
-                fontSize: "18px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              aria-label="Send"
-            >
-              <RiArrowRightCircleFill size={"2rem"} color="white" />
-            </button>
-            <button
-              style={{
-                padding: "0.5rem",
-                background: "#3b82f6",
-                color: "#fff",
-                border: "none",
-                borderRadius: "50%",
-                cursor: "pointer",
-                fontSize: "18px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              aria-label="Microphone"
-              onClick={() => navigate("/main/sue?v=true")}
-            >
-              <FaMicrophone size={"1.5rem"} color="white" />
-            </button>
-          </div>
+          <ChefSueKeyboard />
         </div>
       </div>
+    </div>
+  );
+}
+
+export function ChefSueKeyboard({ style, onSend }: { style?: React.CSSProperties, onSend?: (...args: any) => any }) {
+  const navigate = useNavigate();
+  const { setMessages, messages } = useGlobal();
+  const [input, setInput] = useState("");
+
+  const handleSend = () => {
+    if (input.trim()) {
+      onSend && onSend();
+      setMessages([...messages, { sender: "You", text: input }]);
+      setInput("");
+    }
+  };
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        padding: "16px",
+        borderTop: "1px solid #e5e7eb",
+        background: "#fff",
+        position: "fixed",
+        bottom: "3.8rem",
+        width: "100%",
+        ...style
+      }}
+    >
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Type your message..."
+        style={{
+          padding: "10px 14px",
+          borderRadius: "20px",
+          border: "1px solid #d1d5db",
+          marginRight: "12px",
+          fontSize: "16px",
+          width: "59vw",
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleSend();
+        }}
+      />
+      <button
+        onClick={handleSend}
+        style={{
+          padding: "0.25rem",
+          background: "#10b981",
+          color: "#fff",
+          border: "none",
+          borderRadius: "50%",
+          marginRight: "8px",
+          cursor: "pointer",
+          fontSize: "18px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        aria-label="Send"
+      >
+        <RiArrowRightCircleFill size={"2rem"} color="white" />
+      </button>
+      <button
+        style={{
+          padding: "0.5rem",
+          background: "#3b82f6",
+          color: "#fff",
+          border: "none",
+          borderRadius: "50%",
+          cursor: "pointer",
+          fontSize: "18px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        aria-label="Microphone"
+        onClick={() => navigate("/main/sue?v=true")}
+      >
+        <FaMicrophone size={"1.5rem"} color="white" />
+      </button>
     </div>
   );
 }

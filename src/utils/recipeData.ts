@@ -27,12 +27,12 @@ type Nutrition = {
   potassium: number;        // mg
 };
 
-type InstructionStep = {
+export type InstructionStep = {
   text: string;
   image?: string;
 };
 
-type InstructionGroup = {
+export type InstructionGroup = {
   name: string;
   steps: InstructionStep[];
 };
@@ -85,7 +85,7 @@ export const recipes: Record<string, Recipe> = {
         name: "Fettuccine",
         ingredients: [
           { name: "Box of fettuccine pasta", quantity: "1 (16 oz)", price: 2.5 },
-          { name: "Salt", quantity: "1 tbsp (for boiling water)", price: 0.05 }
+          { name: "Salt", quantity: "1 tbsp", price: 0.05 }
         ]
       },
       {
@@ -119,23 +119,23 @@ export const recipes: Record<string, Recipe> = {
       {
         name: "Preparation",
         steps: [
-          { text: "Slice the chicken breasts into thin strips." },
+          { text: "Slice the chicken breasts into thin strips.", image: 'https://www.datocms-assets.com/22695/1706209257-personalized-nutrition-app-design-concept.webp' },
           { text: "Mince the garlic and chop the parsley." }
         ]
       },
       {
         name: "Cooking the Fettuccine",
         steps: [
-          { text: "Bring a large pot of salted water to a boil." },
-          { text: "Add fettuccine pasta and cook according to package instructions until al dente." },
-          { text: "Drain and set aside." }
+          { text: "Bring a large pot of salted water to a boil.", image: 'https://www.datocms-assets.com/22695/1706209257-personalized-nutrition-app-design-concept.webp' },
+          { text: "Add fettuccine pasta and cook according to package instructions until al dente.", image: 'https://www.datocms-assets.com/22695/1706209257-personalized-nutrition-app-design-concept.webp' },
+          { text: "Drain and set aside.", image: 'https://www.datocms-assets.com/22695/1706209257-personalized-nutrition-app-design-concept.webp' }
         ]
       },
       {
         name: "Cooking the Chicken",
         steps: [
           { text: "Heat olive oil in a skillet over medium-high heat." },
-          { text: "Season chicken strips with salt and black pepper." },
+          { text: "Season chicken strips with salt and black pepper.", image: 'https://www.datocms-assets.com/22695/1706209257-personalized-nutrition-app-design-concept.webp' },
           { text: "Add chicken to the skillet and cook until golden and cooked through, about 5-7 minutes." },
           { text: "Remove chicken from skillet and set aside." }
         ]
@@ -239,13 +239,13 @@ export const recipes: Record<string, Recipe> = {
       {
         name: "Coating the Chicken",
         steps: [
-          { text: "In a bowl, toss chicken pieces with cornstarch, salt, and black pepper until evenly coated." }
+          { text: "In a bowl, toss chicken pieces with cornstarch, salt, and black pepper until evenly coated.", image: 'https://www.datocms-assets.com/22695/1706209257-personalized-nutrition-app-design-concept.webp' }
         ]
       },
       {
         name: "Frying the Chicken",
         steps: [
-          { text: "Heat vegetable oil in a deep pan over medium-high heat." },
+          { text: "Heat vegetable oil in a deep pan over medium-high heat.", image: 'https://www.datocms-assets.com/22695/1706209257-personalized-nutrition-app-design-concept.webp' },
           { text: "Fry chicken pieces in batches until golden and crispy, about 4-5 minutes per batch." },
           { text: "Remove and drain on paper towels." }
         ]
@@ -254,7 +254,7 @@ export const recipes: Record<string, Recipe> = {
         name: "Making the Orange Sauce",
         steps: [
           { text: "In a saucepan, combine orange juice, orange zest, gluten-free soy sauce, rice vinegar, brown sugar, garlic, and ginger." },
-          { text: "Bring to a simmer over medium heat." },
+          { text: "Bring to a simmer over medium heat.", image: 'https://www.datocms-assets.com/22695/1706209257-personalized-nutrition-app-design-concept.webp' },
           { text: "Mix cornstarch with a little water to make a slurry, then stir into the sauce." },
           { text: "Cook until the sauce thickens, about 2 minutes." }
         ]
