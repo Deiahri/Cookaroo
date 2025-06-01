@@ -63,7 +63,7 @@ const RecipeTile: React.FC<RecipeTileProps> = ({
         padding: "0.5rem",
         border: "1px solid #ddd",
         borderRadius: "8px",
-        height: 160,
+        maxHeight: 240,
         width: 180,
         display: "flex",
         flexDirection: "column" as const,
@@ -92,7 +92,8 @@ const RecipeTile: React.FC<RecipeTileProps> = ({
   const imageStyles = small
     ? {
         width: "100%",
-        height: 100,
+        maxHeight: 80,
+        height: 80,
         objectFit: "cover" as const,
         borderRadius: "6px",
       }
@@ -106,7 +107,7 @@ const RecipeTile: React.FC<RecipeTileProps> = ({
   const imageContainerStyles = small
     ? {
         width: "100%",
-        height: 100,
+        maxHeight: 200,
         overflow: "hidden",
         display: "flex",
         alignItems: "center",

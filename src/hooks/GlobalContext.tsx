@@ -37,6 +37,7 @@ export type Message = {
   audioSrc?: string;
   recipe?: string;
   attatchment?: string;
+  image?: string;
 };
 
 const BaseRecipeMap: RecipeMap = {

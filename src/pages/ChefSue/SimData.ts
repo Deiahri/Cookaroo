@@ -4,6 +4,8 @@ export type MessageSimData = {
   audioSrc?: string;
   recipe?: string;
   newLine?: boolean;
+  sender?: string;
+  image?: string;
 };
 /* 
 User: Stephen is a health conscious student who wants to make a dish 
@@ -30,14 +32,22 @@ He also doesn’t have a lot of time to research on possible substitutes for his
 // user: sounds good, let's try that.
 // chef: ... Excellent. Here's recipe.
 
-const msg1 =
-  "Sounds good! Would you like a specific cuisine, or should I base it on what’s available in local stores?";
+const msg1 = "Hey, Stephen, How can I assist you today?";
 export const SimData1: MessageSimData[] = msg1.split(" ").map((s) => {
   return {
     text: s,
     delay: 100,
   };
 });
+
+export const StephenSimData1: MessageSimData[] = [
+  {
+    text: "Give me a recipe like the one I had at Red Ladle, something healthy and easy",
+    delay: 100,
+    audioSrc: "/Stephen1.mp3",
+    sender: "You",
+  },
+];
 
 export const SimData2: MessageSimData[] = [
   {
@@ -459,15 +469,134 @@ export const SimData5: MessageSimData[] = [
     text: "",
     delay: 300,
     newLine: true,
-    recipe: '68f45-c6ae9a0-800565-8d3a84c-7c0b371'
-  }
+    recipe: "68f45-c6ae9a0-800565-8d3a84c-7c0b371",
+  },
 ];
-
 
 export const SimData6: MessageSimData[] = [
   {
     text: "I don't know bruh.",
     delay: 250,
     // audioSrc: "/v5.mp3",
-  }
+  },
 ];
+const cayenne =
+  "On it. I'll swap it out black pepper for cayenne papper while keeping the spice levels the same.";
+export const SimDataCayenne: MessageSimData[] = cayenne.split(" ").map((s) => {
+  return {
+    text: s,
+    delay: 100,
+  };
+});
+
+export const SimDataCayenneRecipe: MessageSimData[] = [
+  {
+    text: "",
+    delay: 0,
+    recipe: "68f45-c6ae9a0-800565-8d3a84c-7d0b008",
+  },
+];
+
+const drainPasta =
+  "Place a colander in the sink, pour in the cooked pasta to drain, and do not rinse to retain the starch for better sauce coating.";
+export const SimDataDrainPasta: MessageSimData[] = drainPasta
+  .split(" ")
+  .map((s) => {
+    return {
+      text: s,
+      delay: 100,
+    };
+  });
+
+export const SimDataDrainPastaImage: MessageSimData[] = [
+  {
+    text: "",
+    delay: 0,
+    image:
+      "https://cdn.apartmenttherapy.info/image/upload/v1611203675/k/Edit/shutterstock_1781025173.jpg",
+  },
+];
+
+const moreProtein =
+  "To boost protein, I’d suggest doubling the chicken breast and swapping regular fettuccine for a high-protein version like lentil or chickpea pasta. You could also blend in lactose-free cottage cheese or silken tofu to enrich the sauce. Want to go with all of these, or just some?";
+export const SimDataMoreProtien: MessageSimData[] = moreProtein
+  .split(" ")
+  .map((s) => {
+    return {
+      text: s,
+      delay: 100,
+      newLine: s == "Want",
+    };
+  });
+
+const moreProteinReply =
+  "Great! Here's your recipe with added chicken breast for higher-protein.";
+export const SimDataMoreProtienReply: MessageSimData[] = moreProteinReply
+  .split(" ")
+  .map((s) => {
+    return {
+      text: s,
+      delay: 100,
+      newLine: s == "Want",
+    };
+  });
+
+export const SimDataMoreProtienRecipe: MessageSimData[] = [
+  {
+    text: "",
+    delay: 0,
+    recipe: '68f45-c6ae9a0-800565-8d3a84c-7d0b44A'
+  },
+];
+
+export const SimDataCookWithSue: MessageSimData[] = [
+  {
+    text: "Today",
+    delay: 400,
+    audioSrc: "/cookWithSue.mp3",
+  },
+  {
+    text: "we're",
+    delay: 150,
+  },
+  {
+    text: "making",
+    delay: 420,
+  },
+  {
+    text: "Red Ladle",
+    delay: 500,
+  },
+  {
+    text: "inspired",
+    delay: 450,
+  },
+  {
+    text: "fettuccine.",
+    delay: 1000,
+  },
+  {
+    text: "Let me",
+    delay: 350,
+  },
+  {
+    text: "know",
+    delay: 350,
+  },
+  {
+    text: "when you're",
+    delay: 350,
+  },
+  {
+    text: "ready",
+    delay: 200,
+  },
+  {
+    text: "to",
+    delay: 200,
+  },
+  {
+    text: "start.",
+    delay: 200,
+  }
+]

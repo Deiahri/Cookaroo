@@ -13,6 +13,15 @@ import {
   SimData4,
   SimData5,
   SimData6,
+  SimDataCayenne,
+  SimDataCayenneRecipe,
+  SimDataCookWithSue,
+  SimDataDrainPasta,
+  SimDataDrainPastaImage,
+  SimDataMoreProtien,
+  SimDataMoreProtienRecipe,
+  SimDataMoreProtienReply,
+  StephenSimData1,
   type MessageSimData,
 } from "./SimData";
 import { sleep } from "../../utils/tools";
@@ -40,7 +49,8 @@ const ChefSue: React.FC = () => {
 
   // Adds a new message to the messages array
   const addMessage = (msg: Message) => {
-    setMessages((prev: Message[]) => [...prev, { sender: "Chef Sue", ...msg }]);
+    const sender = msg.sender ? msg.sender : "Chef Sue";
+    setMessages((prev: Message[]) => [...prev, { ...msg, sender: sender }]);
   };
 
   // Appends/updates the last message by merging with the provided message object
@@ -48,7 +58,12 @@ const ChefSue: React.FC = () => {
     setMessages((prev) => {
       if (prev.length === 0) return prev;
       const last = prev[prev.length - 1];
-      const updated = { ...last, text: (last.text + " " + msg.text).trim() };
+      const updated = {
+        ...last,
+        text: (last.text + " " + msg.text).trim(),
+        ...(msg.recipe && { recipe: msg.recipe }),
+        ...(msg.image && { image: msg.image }),
+      };
       if (Object.keys(msg).includes("thinking")) {
         updated["thinking"] = msg.thinking;
       }
@@ -62,9 +77,10 @@ const ChefSue: React.FC = () => {
   React.useEffect(() => {
     const SimMessageData = async (
       simMessages: MessageSimData[],
-      thinkMS: number = 1500
+      thinkMS: number = 1500,
+      sender?: string
     ) => {
-      addMessage({ text: "", thinking: true });
+      addMessage({ text: "", thinking: true, sender });
       await sleep(thinkMS);
       appendToLastMessage({ text: "", thinking: false });
       for (let simMessage of simMessages) {
@@ -81,20 +97,30 @@ const ChefSue: React.FC = () => {
       if (e.key === "[") {
         SimMessageData(SimData1);
       } else if (e.key === "]") {
-        SimMessageData(SimData2);
+        SimMessageData(StephenSimData1, 1500, "You");
       } else if (e.key === "\\") {
         SimMessageData(SimData3);
       } else if (e.key === ";") {
-        SimMessageData(SimData4, 2000);
-        await sleep(800);
-        setAlert(
-          "Sue updated your profile",
-          "Added peanut allergy and lactose intolerance."
-        );
-      } else if (e.key === "'") {
         SimMessageData(SimData5, 3000);
+        // SimMessageData(SimData4, 2000);
+        // await sleep(800);
+        // setAlert(
+        //   "Sue updated your profile",
+        //   "Added peanut allergy and lactose intolerance."
+        // );
+      } else if (e.key === "'") {
+        await SimMessageData(SimDataCayenne, 1000);
+        await SimMessageData(SimDataCayenneRecipe, 2000);
       } else if (e.key === "/") {
-        SimMessageData(SimData6, 2000);
+        await SimMessageData(SimDataDrainPasta, 1000);
+        await SimMessageData(SimDataDrainPastaImage, 3000);
+      } else if (e.key === "*") {
+        await SimMessageData(SimDataMoreProtien, 1000);
+      } else if (e.key === "-") {
+        await SimMessageData(SimDataMoreProtienReply, 1000);
+        await SimMessageData(SimDataMoreProtienRecipe, 2000);
+      } else if (e.key === '+') {
+        await SimMessageData(SimDataCookWithSue, 1000);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -171,7 +197,7 @@ function VoiceChatWithSue({ messages }: { messages: Message[] }) {
               flexDirection: "column",
             }}
           >
-            {lastMessage?.thinking && <Thinking color={Theme.almostWhite} />}{" "}
+            {lastMessage?.thinking && <Thinking color={Theme.orange} />}{" "}
             {
               <div
                 style={{
@@ -216,7 +242,7 @@ function VoiceChatWithSue({ messages }: { messages: Message[] }) {
             left: "50%",
             transform: "translateX(-50%)",
             padding: "14px 32px",
-            background: "#10b981",
+            background: "#3b82f6",
             color: "#fff",
             border: "none",
             borderRadius: "24px",
@@ -252,8 +278,7 @@ function ChatWithSue({
     if (!el) return;
 
     // If user is within 120px of bottom, auto-scroll
-    const isNearBottom =
-      el.scrollHeight - el.scrollTop - el.clientHeight < 300;
+    const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 300;
 
     if (isNearBottom) {
       scrollToBottom();
@@ -287,7 +312,7 @@ function ChatWithSue({
         justifyContent: "flex-start",
       }}
     >
-      <div style={{ flex: "none" }} >
+      <div style={{ flex: "none" }}>
         <div
           style={{
             maxHeight: "92vh",
@@ -306,12 +331,12 @@ function ChatWithSue({
               flex: 1,
               padding: "80px 24px",
               paddingBottom: 75,
-              boxSizing: 'border-box',
+              boxSizing: "border-box",
               display: "flex",
               flexDirection: "column",
               gap: "8px",
-              overflowY: 'auto',
-              minHeight: '90vh'
+              overflowY: "auto",
+              minHeight: "90vh",
             }}
             ref={scrollRef}
           >
@@ -351,17 +376,34 @@ function ChatWithSue({
                   <div
                     style={{
                       alignSelf: senderIsSelf ? "flex-end" : "flex-start",
-                      background: senderIsSelf ? "#0002" : Theme.orange,
+                      background:
+                        recipeData || msg.image
+                          ? "transparent"
+                          : senderIsSelf
+                          ? "#0002"
+                          : Theme.orange,
                       color: senderIsSelf ? Theme.darkGrey : "#fff",
-                      padding: recipeData ? 0 : "10px 16px",
+                      padding: recipeData || msg.image ? 0 : "10px 16px",
                       borderRadius: "18px",
                       maxWidth: "70%",
                       boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
                     }}
                   >
-                    {msg.thinking && <Thinking color={Theme.almostWhite}/>}
+                    {msg.thinking && <Thinking color={Theme.almostWhite} />}
                     {recipeData && !msg.thinking && (
                       <RecipeTile {...recipeData} small={true} />
+                    )}
+
+                    {msg.image && (
+                      <img
+                        style={{
+                          width: "40vw",
+                          borderRadius: "0.5rem",
+                          border: "1px solid #0004",
+                          objectFit: "cover",
+                        }}
+                        src={msg.image}
+                      />
                     )}
                     {msg.attatchment && (
                       <div
@@ -377,9 +419,10 @@ function ChatWithSue({
                         </span>
                       </div>
                     )}
-                    {!msg.thinking && !msg.recipe && !msg.attatchment && (
-                      <span>{msg.text}</span>
-                    )}
+                    {!msg.thinking &&
+                      !msg.recipe &&
+                      !msg.attatchment &&
+                      !msg.image && <span>{msg.text}</span>}
                   </div>
                 </div>
               );
@@ -490,7 +533,10 @@ export function ChefSueKeyboard({
   );
 }
 
-const Thinking: React.FC<{ size?: number, color?: string }> = ({ size = 8, color = Theme.orange }) => {
+const Thinking: React.FC<{ size?: number; color?: string }> = ({
+  size = 8,
+  color = Theme.orange,
+}) => {
   const dotStyle: React.CSSProperties = {
     display: "inline-block",
     width: size,

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Theme } from "../../utils/globals";
-import Chef from "./chef.svg";
 
 const ChefSueVisualizer = ({
   audioSrc,
@@ -139,7 +138,7 @@ const ChefSueVisualizer = ({
           }}
         >
           <img
-            src={Chef}
+            src={'/SueHead.png'}
             alt="Chef"
             width={60}
             height={60}

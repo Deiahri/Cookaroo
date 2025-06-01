@@ -16,6 +16,7 @@ import styles from "./Recipe.module.css";
 type tabs = "Ingredients" | "Instructions" | "Nutrition";
 const Tabs: tabs[] = ["Ingredients", "Instructions", "Nutrition"];
 const Recipe: React.FC = () => {
+  const navigate = useNavigate();
   const [getParams, _] = useSearchParams();
   const [tab, setTab] = useState<tabs>("Ingredients");
   const {
@@ -27,7 +28,6 @@ const Recipe: React.FC = () => {
     selectedInstructions,
     setMessages,
   } = useGlobal();
-  const navigate = useNavigate();
 
   const handleTabChange = (newTab: tabs) => {
     setSelectMode(false);
@@ -127,6 +127,7 @@ const Recipe: React.FC = () => {
               Discuss with Chef Sue
             </button>
             <button
+
               style={{
                 flex: 1,
                 padding: "0.75rem 1.25rem",
@@ -138,6 +139,7 @@ const Recipe: React.FC = () => {
                 color: "white",
                 fontSize: "1.1rem",
               }}
+              onClick={() => navigate('/main/sue?v=true')}
             >
               Cook with Chef Sue
             </button>
@@ -544,7 +546,7 @@ function InstructionGroupComp({
                 {i + 1}. {step.text}
               </span>
             </div>
-            {step.image && (
+            {/* {step.image && (
               <img
                 style={{
                   width: "95%",
@@ -559,7 +561,7 @@ function InstructionGroupComp({
                 }}
                 src={step.image}
               />
-            )}
+            )} */}
           </div>
         );
       })}
