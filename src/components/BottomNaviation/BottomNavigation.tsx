@@ -6,6 +6,7 @@ import { MdHomeFilled } from "react-icons/md";
 import { Theme } from "../../utils/globals";
 import { useColorTheme } from "../../hooks/useColorTheme";
 import { useNavigate, type NavigateOptions, type To } from "react-router-dom";
+import { GiChefToque } from "react-icons/gi";
 
 type NavButton = {
   label: string;
@@ -34,7 +35,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = () => {
   const buttons: NavButton[] = [
     { label: "Home", icon: <MdHomeFilled onClick={() => nav('/main/home')} size={24} color={iconColor} /> },
     // { label: "Savings", icon: <FaChartLine onClick={() => nav('/main/savings')} size={24} color={iconColor} /> },
-    { label: "Chef Sue", icon: <LuChefHat onClick={() => nav('/main/sue')} size={24} color={iconColor} /> },
+    { label: "Chef Sue", icon: <GiChefToque onClick={() => nav('/main/sue')} size={24} color={iconColor} /> },
     { label: "Recipes", icon: <FaBookmark onClick={() => nav('/main/saved-recipes')} size={20} color={iconColor} /> },
     { label: "Profile", icon: <IoPerson onClick={() => nav('/main/profile')} size={24} color={iconColor} /> },
   ];

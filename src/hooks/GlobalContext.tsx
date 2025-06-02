@@ -42,8 +42,8 @@ export type Message = {
 
 const BaseRecipeMap: RecipeMap = {
   Favorites: [
-    "68f45-c6ae9a0-800565-8d3a84c-7c0b371",
-    "5a9b2-fd21e83-3c77b1-4f6c02e-91ab4fc"
+    // "68f45-c6ae9a0-800565-8d3a84c-7c0b371",
+    // "5a9b2-fd21e83-3c77b1-4f6c02e-91ab4fc"
   ],
 };
 

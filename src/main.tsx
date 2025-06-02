@@ -10,7 +10,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <GlobalProvider>
       <ColorThemeProvider>
-        {/* <OnBoot/> */}
+        <OnBoot/>
         <App />
       </ColorThemeProvider>
     </GlobalProvider>

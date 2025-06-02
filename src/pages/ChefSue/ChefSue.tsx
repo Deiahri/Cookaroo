@@ -255,8 +255,7 @@ function VoiceChatWithSue({ messages }: { messages: Message[] }) {
           }}
           onClick={() => navigate("/main/sue")}
         >
-          <FaMessage style={{ marginBottom: -3, marginRight: 3 }} /> Text sue
-          instead
+          <FaMessage style={{ marginBottom: -3, marginRight: 3 }} /> Switch to Text
         </button>
       </div>
     </>

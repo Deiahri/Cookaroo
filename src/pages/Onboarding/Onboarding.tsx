@@ -615,26 +615,26 @@ function MeetChefSue({ onComplete }: { onComplete: () => void }) {
 
 // Carousel page definitions
 const carouselPages = [
-  {
-    id: 1,
-    render: (onComplete: () => void) => <PickATheme onComplete={onComplete} />,
-  },
-  {
-    id: 2,
-    render: (onComplete: () => void) => (
-      <SwapYourIngredients onComplete={onComplete} />
-    ),
-  },
-  {
-    id: 3,
-    render: (onComplete: () => void) => (
-      <RealTimePricing onComplete={onComplete} />
-    ),
-  },
-  {
-    id: 4,
-    render: (onComplete: () => void) => <MeetChefSue onComplete={onComplete} />,
-  },
+  // {
+  //   id: 1,
+  //   render: (onComplete: () => void) => <PickATheme onComplete={onComplete} />,
+  // },
+  // {
+  //   id: 2,
+  //   render: (onComplete: () => void) => (
+  //     <SwapYourIngredients onComplete={onComplete} />
+  //   ),
+  // },
+  // {
+  //   id: 3,
+  //   render: (onComplete: () => void) => (
+  //     <RealTimePricing onComplete={onComplete} />
+  //   ),
+  // },
+  // {
+  //   id: 4,
+  //   render: (onComplete: () => void) => <MeetChefSue onComplete={onComplete} />,
+  // },
   {
     id: 5,
     render: (onComplete: () => void) => <Dietary onComplete={onComplete} />,

@@ -152,20 +152,21 @@ const Home: React.FC = () => {
           position: "relative",
           display: "flex",
           alignItems: "center",
-          width: "90%",
-          maxWidth: 400,
+          width: '93%',
           padding: "0.75rem 1rem",
           paddingLeft: "2.5rem",
           paddingTop: "0.85rem",
+          marginRight: '3rem',
           borderRadius: 50,
           border: "1px solid #ddd",
           fontSize: "1rem",
           background: "#fff",
           cursor: "pointer",
           outline: "none",
+          boxSizing: 'border-box',
           justifyContent: "flex-start",
         }}
-        onClick={() => navigate('/main/search')}
+        onClick={() => navigate('/main/sue')}
       >
         <FaMagnifyingGlass
           style={{
@@ -174,7 +175,7 @@ const Home: React.FC = () => {
         pointerEvents: "none",
           }}
         />
-        <span style={{ color: "#888" }}>Search for a dish</span>
+        <span style={{ color: "#888" }}>Ask Sue for Recipes</span>
       </button>
 
       {/* Sections */}

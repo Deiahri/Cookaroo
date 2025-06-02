@@ -1,4 +1,4 @@
-import ReactLogo from "../../assets/react.svg";
+import ChefSue from "../../assets/logo.png";
 import { useColorTheme } from "../../hooks/useColorTheme";
 import styles from "./OnBoot.module.css";
 
@@ -20,12 +20,12 @@ export default function OnBoot() {
       }}
     >
       <img
-        src={ReactLogo}
+        src={ChefSue}
         alt="Centered"
         className={styles["fade-in-scale"]}
         style={{
-          width: "50vw",
-          height: "50vw",
+          width: "60vw",
+          height: "60vw",
           objectFit: "contain",
           maxWidth: "100%",
           maxHeight: "100%",
